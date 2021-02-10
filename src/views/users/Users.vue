@@ -3,7 +3,7 @@
     <CCol col="12" xl="8">
       <CCard>
         <CCardHeader>
-          Users
+          Usuarios
         </CCardHeader>
         <CCardBody>
           <CDataTable
@@ -12,9 +12,7 @@
             :items="items"
             :fields="fields"
             :items-per-page="5"
-            clickable-rows
             :active-page="activePage"
-            @row-clicked="rowClicked"
             :pagination="{ doubleArrows: false, align: 'center'}"
             @page-change="pageChange"
           >

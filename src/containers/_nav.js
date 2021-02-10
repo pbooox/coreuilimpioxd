@@ -7,10 +7,6 @@ export default [
         name: 'Dashboard',
         to: '/dashboard',
         icon: 'cil-speedometer',
-        badge: {
-          color: 'primary',
-          text: 'NEW'
-        }
       },
       {
         _name: 'CSidebarNavTitle',
@@ -19,18 +15,31 @@ export default [
       {
         _name: 'CSidebarNavItem',
         name: 'Premios',
-        to: '/theme/colors',
-        icon: 'cil-drop'
+        to: '/premios',
+        icon: 'cil-star'
       },
       {
         _name: 'CSidebarNavItem',
         name: 'Imágenes',
-        to: '/theme/typography',
-        icon: 'cil-pencil'
+        to: '/imagenes',
+        icon: 'cil-cursor'
       },
       {
         _name: 'CSidebarNavTitle',
-        _children: ['Actualizaciones']
+        _children: ['Recursos internos']
+      },
+      {
+        _name: 'CSidebarNavItem',
+        name: 'Actualizaciones',
+        to: '/actualizaciones',
+        icon: 'cil-list'
+      },
+      
+      {
+        _name: 'CSidebarNavItem',
+        name: 'Usuarios',
+        to: '/users',
+        icon: 'cil-pencil'
       },
       {
         _name: 'CSidebarNavDropdown',
@@ -129,36 +138,6 @@ export default [
         ]
       },
       {
-        _name: 'CSidebarNavItem',
-        name: 'Charts',
-        to: '/charts',
-        icon: 'cil-chart-pie'
-      },
-      {
-        _name: 'CSidebarNavDropdown',
-        name: 'Icons',
-        route: '/icons',
-        icon: 'cil-star',
-        items: [
-          {
-            name: 'CoreUI Icons',
-            to: '/icons/coreui-icons',
-            badge: {
-              color: 'info',
-              text: 'NEW'
-            }
-          },
-          {
-            name: 'Brands',
-            to: '/icons/brands'
-          },
-          {
-            name: 'Flags',
-            to: '/icons/flags'
-          }
-        ]
-      },
-      {
         _name: 'CSidebarNavDropdown',
         name: 'Notifications',
         route: '/notifications',
@@ -177,25 +156,6 @@ export default [
             to: '/notifications/modals'
           }
         ]
-      },
-      {
-        _name: 'CSidebarNavItem',
-        name: 'Widgets',
-        to: '/widgets',
-        icon: 'cil-calculator',
-        badge: {
-          color: 'primary',
-          text: 'NEW',
-          shape: 'pill'
-        }
-      },
-      {
-        _name: 'CSidebarNavDivider',
-        _class: 'm-2'
-      },
-      {
-        _name: 'CSidebarNavTitle',
-        _children: ['Extras']
       },
       {
         _name: 'CSidebarNavDropdown',
@@ -221,22 +181,6 @@ export default [
           }
         ]
       },
-      {
-        _name: 'CSidebarNavItem',
-        name: 'Download CoreUI',
-        href: 'http://coreui.io/vue/',
-        icon: { name: 'cil-cloud-download', class: 'text-white' },
-        _class: 'bg-success text-white',
-        target: '_blank'
-      },
-      {
-        _name: 'CSidebarNavItem',
-        name: 'Try CoreUI PRO',
-        href: 'http://coreui.io/pro/vue/',
-        icon: { name: 'cil-layers', class: 'text-white' },
-        _class: 'bg-danger text-white',
-        target: '_blank'
-      }
     ]
   }
 ]

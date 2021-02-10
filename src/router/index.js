@@ -7,12 +7,6 @@ const TheContainer = () => import('@/containers/TheContainer')
 // Views
 const Dashboard = () => import('@/views/Dashboard')
 
-const Colors = () => import('@/views/theme/Colors')
-const Typography = () => import('@/views/theme/Typography')
-
-const Charts = () => import('@/views/charts/Charts')
-const Widgets = () => import('@/views/widgets/Widgets')
-
 // Views - Components
 const Cards = () => import('@/views/base/Cards')
 const Forms = () => import('@/views/base/Forms')
@@ -37,10 +31,6 @@ const ButtonGroups = () => import('@/views/buttons/ButtonGroups')
 const Dropdowns = () => import('@/views/buttons/Dropdowns')
 const BrandButtons = () => import('@/views/buttons/BrandButtons')
 
-// Views - Icons
-const CoreUIIcons = () => import('@/views/icons/CoreUIIcons')
-const Brands = () => import('@/views/icons/Brands')
-const Flags = () => import('@/views/icons/Flags')
 
 // Views - Notifications
 const Alerts = () => import('@/views/notifications/Alerts')
@@ -55,7 +45,11 @@ const Register = () => import('@/views/pages/Register')
 
 // Users
 const Users = () => import('@/views/users/Users')
-const User = () => import('@/views/users/User')
+
+//Loteria
+const Premios = () => import('@/views/resources/Premios')
+const Imagenes = () => import('@/views/resources/Imagenes')
+const Actualizaciones = () => import('@/views/resources/Actualizaciones')
 
 Vue.use(Router)
 
@@ -80,36 +74,6 @@ function configRoutes () {
           component: Dashboard
         },
         {
-          path: 'theme',
-          redirect: '/theme/colors',
-          name: 'Theme',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'colors',
-              name: 'Colors',
-              component: Colors
-            },
-            {
-              path: 'typography',
-              name: 'Typography',
-              component: Typography
-            }
-          ]
-        },
-        {
-          path: 'charts',
-          name: 'Charts',
-          component: Charts
-        },
-        {
-          path: 'widgets',
-          name: 'Widgets',
-          component: Widgets
-        },
-        {
           path: 'users',
           meta: {
             label: 'Users'
@@ -125,14 +89,60 @@ function configRoutes () {
               name: 'Users',
               component: Users
             },
-            {
-              path: ':id',
-              meta: {
-                label: 'User Details'
-              },
-              name: 'User',
-              component: User
+          ]
+        },
+        {
+          path: 'premios',
+          meta: {
+            label: 'Premios'
+          },
+          component: {
+            render(c) {
+              return c('router-view')
             }
+          },
+          children: [
+            {
+              path: '',
+              name: 'Premios',
+              component: Premios
+            },
+          ]
+        },
+        {
+          path: 'imagenes',
+          meta: {
+            label: 'Imagenes'
+          },
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: [
+            {
+              path: '',
+              name: 'Imagenes',
+              component: Imagenes
+            },
+          ]
+        },
+        {
+          path: 'actualizaciones',
+          meta: {
+            label: 'Actualizaciones'
+          },
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: [
+            {
+              path: '',
+              name: 'Actualizaciones',
+              component: Actualizaciones
+            },
           ]
         },
         {
@@ -252,31 +262,6 @@ function configRoutes () {
               path: 'brand-buttons',
               name: 'Brand Buttons',
               component: BrandButtons
-            }
-          ]
-        },
-        {
-          path: 'icons',
-          redirect: '/icons/coreui-icons',
-          name: 'CoreUI Icons',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'coreui-icons',
-              name: 'Icons library',
-              component: CoreUIIcons
-            },
-            {
-              path: 'brands',
-              name: 'Brands',
-              component: Brands
-            },
-            {
-              path: 'flags',
-              name: 'Flags',
-              component: Flags
             }
           ]
         },
