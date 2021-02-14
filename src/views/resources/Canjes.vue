@@ -238,6 +238,7 @@ export default {
         password: this.contra1,
         rol: this.rol,
       }).then(function (response) {
+        console.log(response.data)
          toastr.success(response.data, "Listo");
       })
       .catch(function (error) {

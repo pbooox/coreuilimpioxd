@@ -56,40 +56,11 @@
                 placeholder="Ingresa el nombre"
                 v-model="nombre"
               />
-              <CInput
-                label="Correo"
-                placeholder="Ingresa el correo"
-                v-model="correo"
-              />
-              <CInput
-                label="Contraseña"
-                placeholder="Ingresa la contraseña"
-                v-model="contra1"
-                type="password"
-              />
-              <CInput
-                label="Comprobar contraseña"
-                placeholder="Repite la contraseña"
-                v-model="contra2"
-                type="password"
-              />
-              <!-- <CSelect
-                label="Rol"
-                :options="roles"
-                placeholder="Seleccione rol"
-                v-model="rol"
-              /> -->
-              <label>Rol</label>
-              <select class="form-control " v-model="rol">
-                <option value="Seleccione" disabled>Seleccione...</option>
-                <option value="Administrador">Administrador</option>
-                <option value="Gestor">Gestor de contenido</option>
-              </select>
               <div>
                 <br>
               </div>
-              <CCard v-show="errorUser" color="danger" class="text-center" body-wrapper text-color="white">
-                <blockquote v-for="error in errorShowMessageUser" :key="error" v-text="error" class="card-blockquote">
+              <CCard v-show="errorPremio" color="danger" class="text-center" body-wrapper text-color="white">
+                <blockquote v-for="error in errorShowMessagePremio" :key="error" v-text="error" class="card-blockquote">
                   
                 </blockquote>
               </CCard>
@@ -104,7 +75,7 @@
               class="btn btn-info"
               data-style="expand-right"
               v-if="typeAction == 1"
-              @click="saveUser()"
+              @click="savePremio()"
             >Guardar</button>
             <button
               slot="button"
@@ -112,7 +83,7 @@
               class="btn btn-info"
               data-style="expand-right"
               v-if="typeAction == 2"
-              @click="updateUser()"
+              @click="updatePremio()"
             >Actualizar</button>
             <!-- END BUTTONS -->
           </sweet-modal>
@@ -132,13 +103,15 @@ export default {
     SweetModal,
     SweetModalTab
   },
-  name: 'Users',
+  name: 'Premios',
   data () {
     return {
       fields: [
         { key: 'nombre', label: 'Nombre', _classes: 'font-weight-bold' },
-        { key: 'email', label: 'Correo' },
-        { key: 'rol', label: 'Rol'},
+        { key: 'tipo', label: 'Tipo de premio' },
+        { key: 'cantidad', label: 'Premios restantes'},
+        { key: 'empresa', label: 'Empresa'},
+        { key: 'contacto', label: 'Contacto de empresa'},
         { key: 'estado', label: 'Estado'},
         { key: 'acciones', label: 'Acciones'}
       ],
@@ -148,12 +121,19 @@ export default {
       typeAction: 1,
       id: '',
       nombre: '',
-      correo: '',
-      contra1: '',
-      contra2: '',
-      rol: 'Seleccione',
-      errorUser: 0,
-      errorShowMessageUser: [],
+      fichas: 0,
+      tipo: '',
+      descripcion: '',
+      direccion: '',
+      ubicacion: '',
+      contacto: '',
+      empresa: '',
+      vencimiento: '',
+      imagen: '',
+      estado: '',
+      cantidad: 0,
+      errorPremio: 0,
+      errorShowMessagePremio: [],
     }
   },
   watch: {
@@ -180,8 +160,6 @@ export default {
           this.titleModal = "Actualizar Usuario";
           this.typeAction = 2;
           this.nombre = data.nombre;
-          this.correo = data.email;
-          this.rol = data.rol;
           this.id = data._id;
           break;
         }
@@ -200,24 +178,18 @@ export default {
     closeModal(){
       this.$refs.nuevo_usuario.close();
       this.nombre = "";
-      this.contra1 = '',
-      this.contra2 = '',
-      this.correo = '',
-      this.rol = 'Seleccione';
-      this.errorUser = 0;
-      this.errorShowMessageUser = [];
+
+      this.errorPremio = 0;
+      this.errorShowMessagePremio = [];
       this.id = '';
       
     },
-    saveUser(){
-      if (this.validateUser()){
+    savePremio(){
+      if (this.validatePremio()){
           return;
       }
       axios.post(`http://localhost:4500/crear-usuario`,{
         nombre: this.nombre,
-        email: this.correo,
-        password: this.contra1,
-        rol: this.rol,
       }).then(function (response) {
         toastr.success(response.data.message, 'Listo')
       })
@@ -227,16 +199,13 @@ export default {
       this.$forceUpdate();
       this.closeModal();
     },
-    updateUser(){
-      if (this.validateUser()){
+    updatePremio(){
+      if (this.validatePremio()){
           return;
       }
       axios.post(`http://localhost:4500/actualizar-usuario`,{
         _id: this.id,
         nombre: this.nombre,
-        email: this.correo,
-        password: this.contra1,
-        rol: this.rol,
       }).then(function (response) {
          toastr.success(response.data, "Listo");
       })
@@ -246,40 +215,28 @@ export default {
       this.closeModal();
       this.$forceUpdate();
     },
-    validateUser(){
-      this.errorUser = 0;
-      this.errorShowMessageUser = [];
-      if (!this.nombre) this.errorShowMessageUser.push('El nombre de usuario no puede estar vacío');
-      if (!this.correo) {
-        this.errorShowMessageUser.push('El correo no puede estar vacío');
-      }
-      else if (!this.validEmail(this.correo)){
-        this.errorShowMessageUser.push('El correo no es válido');
-      }
-      if (this.contra1 !== this.contra2) this.errorShowMessageUser.push('Las contraseñas no coinciden');
-      if (!this.contra1 || !this.contra2) this.errorShowMessageUser.push('No ha ingresado ambos campos de contraseña')
-      if (this.rol === "Seleccione") this.errorShowMessageUser.push('Por favor seleccione un rol');
+    validatePremio(){
+      this.errorPremio = 0;
+      this.errorShowMessagePremio = [];
+      if (!this.nombre) this.errorShowMessagePremio.push('El nombre de usuario no puede estar vacío');
+      
 
-      if (this.errorShowMessageUser.length) this.errorUser = 1;
-      return this.errorUser;
-    },
-    validEmail: function (email) {
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(email);
+      if (this.errorShowMessagePremio.length) this.errorPremio = 1;
+      return this.errorPremio;
     },
     getBadge (estado) {
       switch (estado) {
-        case 'Activo': return 'success'
-        case 'Inactivo': return 'danger'
+        case 'true': return 'success'
+        case 'false': return 'danger'
         default: 'primary'
       }
     },
     pageChange (val) {
       this.$router.push({ query: { page: val }})
     },
-    getUsuarios(){
+    getPremios(){
       let me = this;
-      var response = axios.get(`http://localhost:4500/usuarios`)
+      var response = axios.get(`http://localhost:4500/premios`)
       .then(function (response) {
         me.items = response.data
       })
@@ -292,7 +249,7 @@ export default {
     },
   },
   mounted(){
-    this.getUsuarios();
+    this.getPremios();
   },
 }
 </script>
