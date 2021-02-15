@@ -3,12 +3,12 @@
     <CCol col="12" xl="12">
       <CCard>
         <CCardHeader>
-          <div>Usuarios</div>
+          <div>Canjes</div>
         </CCardHeader>
         <br>
-        <CCol col="2" sm="2" md="2" xl class="mb-3 mb-xl-0">
+        <!-- <CCol col="2" sm="2" md="2" xl class="mb-3 mb-xl-0">
             <CButton @click="openModal('register', '')" color="info">Nuevo</CButton>
-          </CCol>
+        </CCol> -->
         <CCardBody>
           <CDataTable
             hover
@@ -39,8 +39,8 @@
                 <button @click="openModal('update', data.item)" class="btn btn-info">Editar</button>
                 
                 <!-- Preguntar si se deja editar y desactivar escrito o solo los iconos -->
-                <button v-if="data.item.estado==='Activo'" class="btn btn-danger">Desactivar</button>
-                <button v-else class="btn btn-success">Activar</button>
+                <button v-if="data.item.estado==='Activo'" class="btn btn-success">Canjear</button>
+                <button v-else class="btn btn-danger">Cancelar cupón</button>
               </div>
             </td>
           </template>
@@ -62,34 +62,21 @@
                 v-model="correo"
               />
               <CInput
-                label="Contraseña"
-                placeholder="Ingresa la contraseña"
-                v-model="contra1"
-                type="password"
+                label="Descripción"
+                placeholder="Ingresa la descripción"
+                v-model="descripcion"
               />
-              <CInput
-                label="Comprobar contraseña"
-                placeholder="Repite la contraseña"
-                v-model="contra2"
-                type="password"
-              />
-              <!-- <CSelect
-                label="Rol"
-                :options="roles"
-                placeholder="Seleccione rol"
-                v-model="rol"
-              /> -->
-              <label>Rol</label>
+              <!-- <label>Rol</label>
               <select class="form-control " v-model="rol">
                 <option value="Seleccione" disabled>Seleccione...</option>
                 <option value="Administrador">Administrador</option>
                 <option value="Gestor">Gestor de contenido</option>
-              </select>
+              </select> -->
               <div>
                 <br>
               </div>
-              <CCard v-show="errorUser" color="danger" class="text-center" body-wrapper text-color="white">
-                <blockquote v-for="error in errorShowMessageUser" :key="error" v-text="error" class="card-blockquote">
+              <CCard v-show="errorDescripcion" color="danger" class="text-center" body-wrapper text-color="white">
+                <blockquote v-for="error in errorShowMessageCanje" :key="error" v-text="error" class="card-blockquote">
                   
                 </blockquote>
               </CCard>
@@ -104,7 +91,7 @@
               class="btn btn-info"
               data-style="expand-right"
               v-if="typeAction == 1"
-              @click="saveUser()"
+              
             >Guardar</button>
             <button
               slot="button"
@@ -137,9 +124,8 @@ export default {
     return {
       fields: [
         { key: 'nombre', label: 'Nombre', _classes: 'font-weight-bold' },
-        { key: 'email', label: 'Correo' },
-        { key: 'rol', label: 'Rol'},
-        { key: 'estado', label: 'Estado'},
+        { key: 'correo', label: 'Correo' },
+        { key: 'descripcion', label: 'Descripción'},
         { key: 'acciones', label: 'Acciones'}
       ],
       activePage: 1,
@@ -149,11 +135,9 @@ export default {
       id: '',
       nombre: '',
       correo: '',
-      contra1: '',
-      contra2: '',
-      rol: 'Seleccione',
-      errorUser: 0,
-      errorShowMessageUser: [],
+      descripcion: '',
+      errorDescripcion: 0,
+      errorShowMessageCanje: [],
     }
   },
   watch: {
@@ -200,16 +184,13 @@ export default {
     closeModal(){
       this.$refs.nuevo_usuario.close();
       this.nombre = "";
-      this.contra1 = '',
-      this.contra2 = '',
       this.correo = '',
-      this.rol = 'Seleccione';
-      this.errorUser = 0;
-      this.errorShowMessageUser = [];
+      this.errorDescripcion = 0;
+      this.errorShowMessageCanje = [];
       this.id = '';
       
     },
-    saveUser(){
+/*     saveUser(){
       if (this.validateUser()){
           return;
       }
@@ -226,7 +207,7 @@ export default {
       })
       this.$forceUpdate();
       this.closeModal();
-    },
+    }, */
     updateUser(){
       if (this.validateUser()){
           return;
@@ -248,21 +229,21 @@ export default {
       this.$forceUpdate();
     },
     validateUser(){
-      this.errorUser = 0;
-      this.errorShowMessageUser = [];
-      if (!this.nombre) this.errorShowMessageUser.push('El nombre de usuario no puede estar vacío');
+      this.errorDescripcion = 0;
+      this.errorShowMessageCanje = [];
+      if (!this.nombre) this.errorShowMessageCanje.push('El nombre de usuario no puede estar vacío');
       if (!this.correo) {
-        this.errorShowMessageUser.push('El correo no puede estar vacío');
+        this.errorShowMessageCanje.push('El correo no puede estar vacío');
       }
       else if (!this.validEmail(this.correo)){
-        this.errorShowMessageUser.push('El correo no es válido');
+        this.errorShowMessageCanje.push('El correo no es válido');
       }
-      if (this.contra1 !== this.contra2) this.errorShowMessageUser.push('Las contraseñas no coinciden');
-      if (!this.contra1 || !this.contra2) this.errorShowMessageUser.push('No ha ingresado ambos campos de contraseña')
-      if (this.rol === "Seleccione") this.errorShowMessageUser.push('Por favor seleccione un rol');
+      if (this.contra1 !== this.contra2) this.errorShowMessageCanje.push('Las contraseñas no coinciden');
+      if (!this.contra1 || !this.contra2) this.errorShowMessageCanje.push('No ha ingresado ambos campos de contraseña')
+      if (this.rol === "Seleccione") this.errorShowMessageCanje.push('Por favor seleccione un rol');
 
-      if (this.errorShowMessageUser.length) this.errorUser = 1;
-      return this.errorUser;
+      if (this.errorShowMessageCanje.length) this.errorDescripcion = 1;
+      return this.errorDescripcion;
     },
     validEmail: function (email) {
       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -278,9 +259,9 @@ export default {
     pageChange (val) {
       this.$router.push({ query: { page: val }})
     },
-    getUsuarios(){
+    getCanjes(){
       let me = this;
-      var response = axios.get(`http://localhost:4500/usuarios`)
+      var response = axios.get(`http://localhost:4500/canjes`)
       .then(function (response) {
         me.items = response.data
       })
@@ -293,7 +274,7 @@ export default {
     },
   },
   mounted(){
-    this.getUsuarios();
+    this.getCanjes();
   },
 }
 </script>

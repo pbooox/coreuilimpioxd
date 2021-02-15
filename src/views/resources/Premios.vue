@@ -3,7 +3,7 @@
     <CCol col="12" xl="12">
       <CCard>
         <CCardHeader>
-          <div>Usuarios</div>
+          <div>Premios</div>
         </CCardHeader>
         <br>
         <CCol col="2" sm="2" md="2" xl class="mb-3 mb-xl-0">
@@ -55,6 +55,60 @@
                 label="Nombre"
                 placeholder="Ingresa el nombre"
                 v-model="nombre"
+              />
+              <CInput
+                label="Fichas para canje"
+                placeholder="Ingresa la cantidad de fichas necesarias"
+                v-model="fichas"
+                type="number"
+                min="0"
+              />
+              <label>Tipo de premio</label>
+              <select class="form-control " v-model="tipo">
+                <option value="Seleccione" disabled>Seleccione...</option>
+                <option value="amarillo">Amarillo</option>
+                <option value="morado">Morado</option>
+                <option value="blanco">Blanco</option>
+                <option value="rojo">Rojo</option>
+              </select>
+              <br>
+              <CInput
+                label="Descripción del premio"
+                placeholder="Ingresa la descripción"
+                v-model="descripcion"
+              />
+              <CInput
+                label="Dirección del premio"
+                placeholder="Ingresa la dirección para canje"
+                v-model="direccion"
+              />
+              <CInput
+                label="Empresa"
+                placeholder="Ingresa el nombre de la empresa"
+                v-model="empresa"
+              />
+              <CInput
+                label="Contacto"
+                placeholder="Ingresa el contacto de la empresa"
+                v-model="contacto"
+              />
+              <CInput
+                label="Fecha de vencimiento del canje"
+                placeholder="Ingresa el nombre"
+                v-model="vencimiento"
+                type="date"
+              />
+              <CInput
+                label="Cantidad de premios disponibles"
+                placeholder="Ingresa la cantidad de premios"
+                v-model="cantidad"
+                type="number"
+                min="0"
+              />
+              <CInput
+                label="Imagen del premio"
+                placeholder="Ingresa la imagen del premio"
+                v-model="imagen"
               />
               <div>
                 <br>
@@ -122,14 +176,14 @@ export default {
       id: '',
       nombre: '',
       fichas: 0,
-      tipo: '',
+      tipo: 'Seleccione',
       descripcion: '',
       direccion: '',
-      ubicacion: '',
+      ubicacion: 'Pendiente',
       contacto: '',
       empresa: '',
       vencimiento: '',
-      imagen: '',
+      imagen: 'https://res.cloudinary.com/dxj44eizq/image/upload/v1613269259/nivel_1_vtbk4s.png',
       estado: '',
       cantidad: 0,
       errorPremio: 0,
@@ -152,15 +206,28 @@ export default {
       me.$refs.nuevo_usuario.open();
       switch (accion) {
         case "register": {
-          this.titleModal = "Nuevo Usuario";
+          this.titleModal = "Nuevo Premio";
           this.typeAction = 1;
           break;
         }
         case "update": {
-          this.titleModal = "Actualizar Usuario";
+          var venc = this.tomarFecha(data.vencimiento);
+          this.titleModal = "Actualizar Premio";
           this.typeAction = 2;
           this.nombre = data.nombre;
           this.id = data._id;
+          this.nombre = data.nombre;
+          this.fichas = data.fichas;
+          this.tipo = data.tipo;
+          this.descripcion = data.descripcion;
+          this.direccion = data.direccion;
+          this.ubicacion = data.ubicacion;
+          this.contacto = data.contacto;
+          this.empresa = data.empresa;
+          this.vencimiento = venc;
+          this.imagen = data.imagen;
+          this.cantidad = data.cantidad;
+          this.ubicacion = data.ubicacion;
           break;
         }
         case 'deactivate':
@@ -175,6 +242,23 @@ export default {
         }
       }
     },
+    tomarFecha(vencimiento){
+      var venc = new Date(vencimiento);
+      var regresar;
+      if ((venc.getMonth()) < 10){
+        if(venc.getMonth() === 0){
+          regresar = venc.getFullYear() + '-01-' + venc.getDate()
+        }
+        else{
+          regresar = venc.getFullYear() + '-0' + venc.getMonth() + '-' + venc.getDate()
+        }
+        
+      }
+      else{
+        regresar = venc.getFullYear() + '-' + venc.getMonth() + '-' + venc.getDate()
+      }
+      return regresar;
+    },
     closeModal(){
       this.$refs.nuevo_usuario.close();
       this.nombre = "";
@@ -188,8 +272,18 @@ export default {
       if (this.validatePremio()){
           return;
       }
-      axios.post(`http://localhost:4500/crear-usuario`,{
+      axios.post(`http://localhost:4500/premios/nuevo`,{
         nombre: this.nombre,
+        fichas: this.fichas,
+        tipo: this.tipo,
+        descripcion: this.descripcion,
+        direccion: this.direccion,
+        ubicacion: 'Pendiente',
+        contacto: this.contacto,
+        empresa: this.empresa,
+        vencimiento: this.vencimiento,
+        imagen: 'https://res.cloudinary.com/dxj44eizq/image/upload/v1613269259/nivel_1_vtbk4s.png',
+        cantidad: this.cantidad,
       }).then(function (response) {
         toastr.success(response.data.message, 'Listo')
       })
@@ -203,9 +297,19 @@ export default {
       if (this.validatePremio()){
           return;
       }
-      axios.post(`http://localhost:4500/actualizar-usuario`,{
+      axios.post(`http://localhost:4500/premios/actualizar`,{
         _id: this.id,
         nombre: this.nombre,
+        fichas: this.fichas,
+        tipo: this.tipo,
+        descripcion: this.descripcion,
+        direccion: this.direccion,
+        ubicacion: 'Pendiente',
+        contacto: this.contacto,
+        empresa: this.empresa,
+        vencimiento: this.vencimiento,
+        imagen: 'https://res.cloudinary.com/dxj44eizq/image/upload/v1613269259/nivel_1_vtbk4s.png',
+        cantidad: this.cantidad,
       }).then(function (response) {
          toastr.success(response.data, "Listo");
       })
@@ -219,6 +323,7 @@ export default {
       this.errorPremio = 0;
       this.errorShowMessagePremio = [];
       if (!this.nombre) this.errorShowMessagePremio.push('El nombre de usuario no puede estar vacío');
+      if (this.rol === "Seleccione") this.errorShowMessagePremio.push('Por favor seleccione un tipo de premio');
       
 
       if (this.errorShowMessagePremio.length) this.errorPremio = 1;
@@ -226,8 +331,8 @@ export default {
     },
     getBadge (estado) {
       switch (estado) {
-        case 'true': return 'success'
-        case 'false': return 'danger'
+        case 'Activo': return 'success'
+        case 'Inactivo': return 'danger'
         default: 'primary'
       }
     },
@@ -236,7 +341,7 @@ export default {
     },
     getPremios(){
       let me = this;
-      var response = axios.get(`http://localhost:4500/premios`)
+      var response = axios.get(`http://localhost:4500/premios2`)
       .then(function (response) {
         me.items = response.data
       })

@@ -39,8 +39,8 @@
                 <button @click="openModal('update', data.item)" class="btn btn-info">Editar</button>
                 
                 <!-- Preguntar si se deja editar y desactivar escrito o solo los iconos -->
-                <button v-if="data.item.estado==='Activo'" class="btn btn-danger">Desactivar</button>
-                <button v-else class="btn btn-success">Activar</button>
+                <button @click="openModal('deactivate', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-danger">Desactivar</button>
+                <button @click="openModal('activate', data.item)" v-else class="btn btn-success">Activar</button>
               </div>
             </td>
           </template>
@@ -116,6 +116,36 @@
             >Actualizar</button>
             <!-- END BUTTONS -->
           </sweet-modal>
+
+           <sweet-modal ref="activar_modal" icon="info">
+            {{tituloModalActivar}}
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-info"
+              @click="closeModal()"
+            >
+              No
+            </button>
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-danger"
+              v-if="typeAction == 3"
+              @click="deactivateUser()"
+            >
+              Si
+            </button>
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-success"
+              v-if="typeAction == 4"
+              @click="activateUser()"
+            >
+              Si
+            </button>
+          </sweet-modal>
         </CCardBody>
       </CCard>
     </CCol>
@@ -154,6 +184,7 @@ export default {
       rol: 'Seleccione',
       errorUser: 0,
       errorShowMessageUser: [],
+      tituloModalActivar: '',
     }
   },
   watch: {
@@ -187,18 +218,25 @@ export default {
         }
         case 'deactivate':
         {
-          
-          break
+          me.$refs.activar_modal.open();
+          this.tituloModalActivar = '¿Desea desactivar el usuario?'
+          this.id = data._id
+          this.typeAction = 3
+          break;
         }
         case 'activate':
         {
-          
+          me.$refs.activar_modal.open();
+          this.tituloModalActivar = '¿Desea activar el usuario?'
+          this.id = data._id
+          this.typeAction = 4
           break
         }
       }
     },
     closeModal(){
       this.$refs.nuevo_usuario.close();
+      this.$refs.activar_modal.close();
       this.nombre = "";
       this.contra1 = '',
       this.contra2 = '',
@@ -246,6 +284,28 @@ export default {
       this.closeModal();
       this.$forceUpdate();
     },
+    deactivateUser(){
+      axios.post(`http://localhost:4500/desactivar-usuario`,{
+        _id: this.id,
+      }).then(function (response) {
+         toastr.success(response.data, "Listo");
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+      this.closeModal();
+    },
+    activateUser(){
+      axios.post(`http://localhost:4500/activar-usuario`,{
+        _id: this.id,
+      }).then(function (response) {
+         toastr.success(response.data, "Listo");
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+      this.closeModal();
+    },
     validateUser(){
       this.errorUser = 0;
       this.errorShowMessageUser = [];
@@ -257,7 +317,7 @@ export default {
         this.errorShowMessageUser.push('El correo no es válido');
       }
       if (this.contra1 !== this.contra2) this.errorShowMessageUser.push('Las contraseñas no coinciden');
-      if (!this.contra1 || !this.contra2) this.errorShowMessageUser.push('No ha ingresado ambos campos de contraseña')
+      if ((!this.contra1 || !this.contra2)  && (this.typeAction === 1)) this.errorShowMessageUser.push('No ha ingresado ambos campos de contraseña')
       if (this.rol === "Seleccione") this.errorShowMessageUser.push('Por favor seleccione un rol');
 
       if (this.errorShowMessageUser.length) this.errorUser = 1;
