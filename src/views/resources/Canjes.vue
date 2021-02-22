@@ -6,9 +6,9 @@
           <div>Canjes</div>
         </CCardHeader>
         <br>
-        <!-- <CCol col="2" sm="2" md="2" xl class="mb-3 mb-xl-0">
-            <CButton @click="openModal('register', '')" color="info">Nuevo</CButton>
-        </CCol> -->
+        <CCol col="2" sm="2" md="2" xl class="mb-3 mb-xl-0">
+            <CButton @click="openModal('register', '')" color="info">Reportes</CButton>
+        </CCol> 
         <CCardBody>
           <CDataTable
             hover
