@@ -39,8 +39,8 @@
                 <button @click="openModal('update', data.item)" class="btn btn-info">Editar</button>
                 
                 <!-- Preguntar si se deja editar y desactivar escrito o solo los iconos -->
-                <button v-if="data.item.estado==='Activo'" class="btn btn-danger">Desactivar</button>
-                <button v-else class="btn btn-success">Activar</button>
+                <button @click="openModal('deactivate', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-danger">Desactivar</button>
+                <button @click="openModal('activate', data.item)" v-else class="btn btn-success">Activar</button>
               </div>
             </td>
           </template>
@@ -66,6 +66,15 @@
               <label>Tipo de premio</label>
               <select class="form-control " v-model="tipo">
                 <option value="Seleccione" disabled>Seleccione...</option>
+                <option value="amarillo">Amarillo</option>
+                <option value="morado">Morado</option>
+                <option value="blanco">Blanco</option>
+                <option value="rojo">Rojo</option>
+              </select>
+              <br>
+              <label>Departamento</label>
+              <select class="form-control " v-model="departamento">
+                <option value="" disabled>Seleccione...</option>
                 <option value="amarillo">Amarillo</option>
                 <option value="morado">Morado</option>
                 <option value="blanco">Blanco</option>
@@ -105,11 +114,8 @@
                 type="number"
                 min="0"
               />
-              <CInput
-                label="Imagen del premio"
-                placeholder="Ingresa la imagen del premio"
-                v-model="imagen"
-              />
+              <label>Imagen</label><br>
+              <input type="file" @change="processFile($event)" />
               <div>
                 <br>
               </div>
@@ -140,6 +146,36 @@
               @click="updatePremio()"
             >Actualizar</button>
             <!-- END BUTTONS -->
+          </sweet-modal>
+
+          <sweet-modal ref="activar_modal" icon="info">
+            {{tituloModalActivar}}
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-info"
+              @click="closeModal()"
+            >
+              No
+            </button>
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-danger"
+              v-if="typeAction == 3"
+              @click="deactivatePremio()"
+            >
+              Si
+            </button>
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-success"
+              v-if="typeAction == 4"
+              @click="activatePremio()"
+            >
+              Si
+            </button>
           </sweet-modal>
         </CCardBody>
       </CCard>
@@ -172,22 +208,26 @@ export default {
       activePage: 1,
       items: null,
       titleModal: "",
+      tituloModalActivar: '',
       typeAction: 1,
       id: '',
       nombre: '',
       fichas: 0,
       tipo: 'Seleccione',
+      departamento: '',
       descripcion: '',
       direccion: '',
       ubicacion: 'Pendiente',
       contacto: '',
       empresa: '',
       vencimiento: '',
-      imagen: 'https://res.cloudinary.com/dxj44eizq/image/upload/v1613269259/nivel_1_vtbk4s.png',
+      imagen: '',
       estado: '',
       cantidad: 0,
       errorPremio: 0,
       errorShowMessagePremio: [],
+      CLOUDINARY_URL: 'https://api.cloudinary.com/v1_1/dxj44eizq/image/upload',
+      CLOUDINARY_UPLOAD_PRESET: 'pw39sleo',
     }
   },
   watch: {
@@ -201,16 +241,33 @@ export default {
     }
   },
   methods: {
+    processFile(event) {
+      this.imagen = event.target.files[0];
+      
+    },
+    GuardarImagen() {
+      let formData = new FormData();
+      formData.append("file", this.imagen); // le damos los datos de la imagen luego que se lleno en la funcion processFile()
+      formData.append("upload_preset", this.CLOUDINARY_UPLOAD_PRESET); // le damos nuestro preset
+
+      //subiendo imagen con fetch
+      fetch(this.CLOUDINARY_URL, { method: "POST", body: formData })
+        .then(response => response.json()) //convertimos la respuesta en json
+        .then(data => this.imagen = data.url)// obtenemos la url de la imagen guardada
+        .catch(error => console.log("ocurrio un error " , error)); //capturamos un posible error
+    },
     openModal(accion, data = []){
       let me = this;
-      me.$refs.nuevo_usuario.open();
+      
       switch (accion) {
         case "register": {
+          me.$refs.nuevo_usuario.open();
           this.titleModal = "Nuevo Premio";
           this.typeAction = 1;
           break;
         }
         case "update": {
+          me.$refs.nuevo_usuario.open();
           var venc = this.tomarFecha(data.vencimiento);
           this.titleModal = "Actualizar Premio";
           this.typeAction = 2;
@@ -228,17 +285,24 @@ export default {
           this.imagen = data.imagen;
           this.cantidad = data.cantidad;
           this.ubicacion = data.ubicacion;
+          this.departamento = data.departamento;
           break;
         }
         case 'deactivate':
         {
-          
-          break
+          this.$refs.activar_modal.open();
+          this.tituloModalActivar = '¿Desea cancelar el canje?'
+          this.id = data._id
+          this.typeAction = 3
+          break;
         }
         case 'activate':
         {
-          
-          break
+          this.$refs.activar_modal.open();
+          this.tituloModalActivar = '¿Desea reactivar el canje?'
+          this.id = data._id
+          this.typeAction = 4
+          break;
         }
       }
     },
@@ -261,8 +325,22 @@ export default {
     },
     closeModal(){
       this.$refs.nuevo_usuario.close();
+      this.$refs.activar_modal.close();
       this.nombre = "";
-
+      this.id = '';
+      this.nombre = '';
+      this.fichas = 0;
+      this.tipo = 'Seleccione';
+      this.departamento = '';
+      this.descripcion = '';
+      this.direccion = '';
+      this.ubicacion = '';
+      this.contacto = '';
+      this.empresa = '';
+      this.vencimiento = '';
+      this.imagen = '';
+      this.cantidad = 0;
+      this.ubicacion = '';
       this.errorPremio = 0;
       this.errorShowMessagePremio = [];
       this.id = '';
@@ -270,8 +348,10 @@ export default {
     },
     savePremio(){
       if (this.validatePremio()){
-          return;
+        return;
       }
+      this.GuardarImagen();
+      let me = this;
       axios.post(`http://localhost:4500/premios/nuevo`,{
         nombre: this.nombre,
         fichas: this.fichas,
@@ -282,21 +362,25 @@ export default {
         contacto: this.contacto,
         empresa: this.empresa,
         vencimiento: this.vencimiento,
-        imagen: 'https://res.cloudinary.com/dxj44eizq/image/upload/v1613269259/nivel_1_vtbk4s.png',
+        imagen: this.imagen,
         cantidad: this.cantidad,
+        departamento: this.departamento,
       }).then(function (response) {
-        toastr.success(response.data.message, 'Listo')
+        toastr.success(response.data.message, 'Listo');
+        me.items = null;
+        setTimeout(() => me.getPremios(), 1000);
       })
       .catch(function (error) {
         console.log(error);
       })
-      this.$forceUpdate();
       this.closeModal();
     },
     updatePremio(){
       if (this.validatePremio()){
           return;
       }
+      this.GuardarImagen();
+      let me = this;
       axios.post(`http://localhost:4500/premios/actualizar`,{
         _id: this.id,
         nombre: this.nombre,
@@ -308,22 +392,59 @@ export default {
         contacto: this.contacto,
         empresa: this.empresa,
         vencimiento: this.vencimiento,
-        imagen: 'https://res.cloudinary.com/dxj44eizq/image/upload/v1613269259/nivel_1_vtbk4s.png',
+        imagen: this.imagen,
+        departamento: this.departamento,
         cantidad: this.cantidad,
       }).then(function (response) {
          toastr.success(response.data, "Listo");
+        me.items = null;
+        setTimeout(() => me.getPremios(), 1000);
       })
       .catch(function (error) {
         console.log(error)
       })
       this.closeModal();
-      this.$forceUpdate();
+    },
+    deactivatePremio(){
+      let me = this;
+      axios.post(`http://localhost:4500/desactivar-premio`,{
+        _id: this.id,
+      }).then(function (response) {
+        toastr.success(response.data, "Listo");
+        me.items = null;
+        setTimeout(() => me.getPremios(), 1000);
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+      this.closeModal();
+    },
+    activatePremio(){
+      let me = this;
+      axios.post(`http://localhost:4500/activar-premio`,{
+        _id: this.id,
+      }).then(function (response) {
+        toastr.success(response.data, "Listo");
+        me.items = null;
+        setTimeout(() => me.getPremios(), 1000);
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+      this.closeModal();
     },
     validatePremio(){
       this.errorPremio = 0;
       this.errorShowMessagePremio = [];
       if (!this.nombre) this.errorShowMessagePremio.push('El nombre de usuario no puede estar vacío');
-      if (this.rol === "Seleccione") this.errorShowMessagePremio.push('Por favor seleccione un tipo de premio');
+      if (this.departamento === '') this.errorShowMessagePremio.push('El departamento es obligatorio');
+      if (this.cantidad === 0) this.errorShowMessagePremio.push('La cantidad de premios no puede ser cero');
+      if (this.cantidad === 0) this.errorShowMessagePremio.push('La cantidad de fichas no puede ser cero');
+      if (this.vencimiento) this.errorShowMessagePremio.push('El vencimiento del premio es obligatorio');
+      if (this.empresa === '') this.errorShowMessagePremio.push('La empresa es obligatoria')
+      if (this.contacto === '') this.errorShowMessagePremio.push('El contacto es obligatorio')
+      if (this.direccion === '') this.errorShowMessagePremio.push('La dirección es obligatoria')
+      if (this.tipo === 'Seleccione') this.errorShowMessagePremio.push('Seleccione un tipo de premio')
       
 
       if (this.errorShowMessagePremio.length) this.errorPremio = 1;

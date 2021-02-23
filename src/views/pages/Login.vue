@@ -7,51 +7,32 @@
             <CCard class="p-4">
               <CCardBody>
                 <CForm>
-                  <h1>Login</h1>
-                  <p class="text-muted">Sign In to your account</p>
+                  <h1>Panel de administración</h1>
+                  <p class="text-muted">Lotería de las leyendas Xtrema</p>
                   <CInput
-                    placeholder="Username"
+                    placeholder="Usuario"
                     autocomplete="username email"
+                    v-model="user"
                   >
                     <template #prepend-content><CIcon name="cil-user"/></template>
                   </CInput>
                   <CInput
-                    placeholder="Password"
+                    placeholder="Contraseña"
                     type="password"
                     autocomplete="curent-password"
+                    v-model="password"
                   >
                     <template #prepend-content><CIcon name="cil-lock-locked"/></template>
                   </CInput>
                   <CRow>
                     <CCol col="6" class="text-left">
-                      <CButton color="primary" class="px-4">Login</CButton>
-                    </CCol>
-                    <CCol col="6" class="text-right">
-                      <CButton color="link" class="px-0">Forgot password?</CButton>
-                      <CButton color="link" class="d-lg-none">Register now!</CButton>
+                      <CButton @click="Login()" color="success" class="px-4">Iniciar sesión</CButton>
                     </CCol>
                   </CRow>
                 </CForm>
               </CCardBody>
             </CCard>
-            <CCard
-              color="primary"
-              text-color="white"
-              class="text-center py-5 d-md-down-none"
-              body-wrapper
-            >
-              <CCardBody>
-                <h2>Sign up</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <CButton
-                  color="light"
-                  variant="outline"
-                  size="lg"
-                >
-                  Register Now!
-                </CButton>
-              </CCardBody>
-            </CCard>
+            
           </CCardGroup>
         </CCol>
       </CRow>
@@ -60,7 +41,47 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+
 export default {
-  name: 'Login'
+  name: 'Login',
+  data () {
+    return {
+      user: '',
+      password: '',
+    }
+  },
+  watch: {
+    $route: {
+      immediate: true,
+      handler (route) {
+        if (route.query && route.query.page) {
+          this.activePage = Number(route.query.page)
+        }
+      }
+    }
+  },
+  methods: {
+    Login(){
+      axios.post(`http://localhost:4500/iniciar-sesion`,{
+        usuario: this.user,
+        password: this.password,
+      }).then(function (response) {
+        if(response.data === 'usuario'){
+          console.log('Usuario no encontrado')
+        }
+        else if(response.data === 'contra'){
+          console.log('Contraseña incorrecta')
+        }
+        else{
+          console.log('Bienvenido')
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+    }
+  },
 }
 </script>

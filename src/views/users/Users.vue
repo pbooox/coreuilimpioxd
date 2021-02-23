@@ -117,7 +117,7 @@
             <!-- END BUTTONS -->
           </sweet-modal>
 
-           <sweet-modal ref="activar_modal" icon="info">
+          <sweet-modal ref="activar_modal" icon="info">
             {{tituloModalActivar}}
             <button
               slot="button"
@@ -200,14 +200,16 @@ export default {
   methods: {
     openModal(accion, data = []){
       let me = this;
-      me.$refs.nuevo_usuario.open();
+      
       switch (accion) {
         case "register": {
+          me.$refs.nuevo_usuario.open();
           this.titleModal = "Nuevo Usuario";
           this.typeAction = 1;
           break;
         }
         case "update": {
+          me.$refs.nuevo_usuario.open();
           this.titleModal = "Actualizar Usuario";
           this.typeAction = 2;
           this.nombre = data.nombre;
@@ -251,6 +253,7 @@ export default {
       if (this.validateUser()){
           return;
       }
+      let me = this;
       axios.post(`http://localhost:4500/crear-usuario`,{
         nombre: this.nombre,
         email: this.correo,
@@ -258,17 +261,19 @@ export default {
         rol: this.rol,
       }).then(function (response) {
         toastr.success(response.data.message, 'Listo')
+        me.items = null;
+        setTimeout(() => me.getUsuarios(), 1000);
       })
       .catch(function (error) {
         console.log(error);
       })
-      this.$forceUpdate();
       this.closeModal();
     },
     updateUser(){
       if (this.validateUser()){
           return;
       }
+      let me = this;
       axios.post(`http://localhost:4500/actualizar-usuario`,{
         _id: this.id,
         nombre: this.nombre,
@@ -276,19 +281,23 @@ export default {
         password: this.contra1,
         rol: this.rol,
       }).then(function (response) {
-         toastr.success(response.data, "Listo");
+        toastr.success(response.data, "Listo");
+        me.items = null;
+        setTimeout(() => me.getUsuarios(), 1000);
       })
       .catch(function (error) {
         console.log(error)
       })
       this.closeModal();
-      this.$forceUpdate();
     },
     deactivateUser(){
+      let me = this;
       axios.post(`http://localhost:4500/desactivar-usuario`,{
         _id: this.id,
       }).then(function (response) {
          toastr.success(response.data, "Listo");
+        me.items = null;
+        setTimeout(() => me.getUsuarios(), 1000);
       })
       .catch(function (error) {
         console.log(error)
@@ -296,10 +305,13 @@ export default {
       this.closeModal();
     },
     activateUser(){
+      let me = this;
       axios.post(`http://localhost:4500/activar-usuario`,{
         _id: this.id,
       }).then(function (response) {
-         toastr.success(response.data, "Listo");
+        toastr.success(response.data, "Listo");
+        me.items = null;
+        setTimeout(() => me.getUsuarios(), 1000);
       })
       .catch(function (error) {
         console.log(error)

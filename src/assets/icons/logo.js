@@ -26,4 +26,6 @@ export const logo = ['556 134',`
       </g>
     </g>
   </g>
-`]
+`];
+
+export const logos = "../../public/img/avatars/8.jpg";
