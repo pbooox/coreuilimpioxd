@@ -56,6 +56,18 @@
                 placeholder="Ingresa el nombre"
                 v-model="nombre"
               />
+              <label>Imagen</label><br>
+              <input type="file" @change="processFile($event)" />
+              <div>
+                <br>
+              </div>
+              <CInput
+                label="Cantidad de premios disponibles"
+                placeholder="Ingresa la cantidad de premios"
+                v-model="cantidad"
+                type="number"
+                min="0"
+              />
               <CInput
                 label="Fichas para canje"
                 placeholder="Ingresa la cantidad de fichas necesarias"
@@ -75,10 +87,13 @@
               <label>Departamento</label>
               <select class="form-control " v-model="departamento">
                 <option value="" disabled>Seleccione...</option>
-                <option value="amarillo">Amarillo</option>
-                <option value="morado">Morado</option>
-                <option value="blanco">Blanco</option>
-                <option value="rojo">Rojo</option>
+                <option value="xela">Xela</option>
+                <option value="guate">Guate</option>
+                <option value="reu">Reu</option>
+                <option value="mazate">Mazate</option>
+                <option value="huehue">Huehue</option>
+                <option value="toto">Toto</option>
+                <option value="san_marcos">San Marcos</option>
               </select>
               <br>
               <CInput
@@ -107,18 +122,8 @@
                 v-model="vencimiento"
                 type="date"
               />
-              <CInput
-                label="Cantidad de premios disponibles"
-                placeholder="Ingresa la cantidad de premios"
-                v-model="cantidad"
-                type="number"
-                min="0"
-              />
-              <label>Imagen</label><br>
-              <input type="file" @change="processFile($event)" />
-              <div>
-                <br>
-              </div>
+              
+              
               <CCard v-show="errorPremio" color="danger" class="text-center" body-wrapper text-color="white">
                 <blockquote v-for="error in errorShowMessagePremio" :key="error" v-text="error" class="card-blockquote">
                   
@@ -222,6 +227,7 @@ export default {
       empresa: '',
       vencimiento: '',
       imagen: '',
+      url_imagen: '',
       estado: '',
       cantidad: 0,
       errorPremio: 0,
@@ -243,7 +249,7 @@ export default {
   methods: {
     processFile(event) {
       this.imagen = event.target.files[0];
-      
+      this.GuardarImagen();
     },
     GuardarImagen() {
       let formData = new FormData();
@@ -253,8 +259,12 @@ export default {
       //subiendo imagen con fetch
       fetch(this.CLOUDINARY_URL, { method: "POST", body: formData })
         .then(response => response.json()) //convertimos la respuesta en json
-        .then(data => this.imagen = data.url)// obtenemos la url de la imagen guardada
+        .then(data => this.AsignarURL(data.url))// obtenemos la url de la imagen guardada
         .catch(error => console.log("ocurrio un error " , error)); //capturamos un posible error
+    },
+    AsignarURL(url){
+      this.url_imagen = url;
+      console.log(this.url_imagen)
     },
     openModal(accion, data = []){
       let me = this;
@@ -350,7 +360,7 @@ export default {
       if (this.validatePremio()){
         return;
       }
-      this.GuardarImagen();
+      console.log(this.url_imagen)
       let me = this;
       axios.post(`http://localhost:4500/premios/nuevo`,{
         nombre: this.nombre,
@@ -362,7 +372,7 @@ export default {
         contacto: this.contacto,
         empresa: this.empresa,
         vencimiento: this.vencimiento,
-        imagen: this.imagen,
+        imagen: this.url_imagen,
         cantidad: this.cantidad,
         departamento: this.departamento,
       }).then(function (response) {
@@ -440,11 +450,12 @@ export default {
       if (this.departamento === '') this.errorShowMessagePremio.push('El departamento es obligatorio');
       if (this.cantidad === 0) this.errorShowMessagePremio.push('La cantidad de premios no puede ser cero');
       if (this.cantidad === 0) this.errorShowMessagePremio.push('La cantidad de fichas no puede ser cero');
-      if (this.vencimiento) this.errorShowMessagePremio.push('El vencimiento del premio es obligatorio');
+      if (!this.vencimiento) this.errorShowMessagePremio.push('El vencimiento del premio es obligatorio');
       if (this.empresa === '') this.errorShowMessagePremio.push('La empresa es obligatoria')
       if (this.contacto === '') this.errorShowMessagePremio.push('El contacto es obligatorio')
       if (this.direccion === '') this.errorShowMessagePremio.push('La dirección es obligatoria')
       if (this.tipo === 'Seleccione') this.errorShowMessagePremio.push('Seleccione un tipo de premio')
+      if (!this.url_imagen) this.errorShowMessagePremio.push('Inserte una imagen')
       
 
       if (this.errorShowMessagePremio.length) this.errorPremio = 1;
