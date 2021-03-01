@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     Login(){
-      axios.post(`http://localhost:4500/iniciar-sesion`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/iniciar-sesion`,{
         usuario: this.user,
         password: this.password,
       }).then(function (response) {

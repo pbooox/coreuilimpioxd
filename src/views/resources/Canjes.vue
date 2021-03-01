@@ -251,7 +251,7 @@ export default {
       if (this.validateUser()){
           return;
       }
-      axios.post(`http://localhost:4500/crear-usuario`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/crear-usuario`,{
         nombre: this.nombre,
         email: this.correo,
         password: this.contra1,
@@ -269,7 +269,7 @@ export default {
           return;
       }
       let me = this;
-      axios.post(`http://localhost:4500/actualizar-canje`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/actualizar-canje`,{
         _id: this.id,
         nombre: this.nombre,
         correo: this.correo,
@@ -289,7 +289,7 @@ export default {
     },
     deactivateCanje(){
       let me = this;
-      axios.post(`http://localhost:4500/cancelar-canje`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/cancelar-canje`,{
         _id: this.id,
       }).then(function (response) {
         toastr.success(response.data, "Listo");
@@ -303,7 +303,7 @@ export default {
     },
     activateCanje(){
       let me = this;
-      axios.post(`http://localhost:4500/reactivar-canje`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/reactivar-canje`,{
         _id: this.id,
       }).then(function (response) {
         toastr.success(response.data, "Listo");
@@ -347,7 +347,7 @@ export default {
     },
     getCanjes(){
       let me = this;
-      var response = axios.get(`http://localhost:4500/canjes`)
+      var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/canjes`)
       .then(function (response) {
         me.items = response.data
       })

@@ -7,8 +7,24 @@
         </CCardHeader>
         <br>
         <CCol col="2" sm="2" md="2" xl class="mb-3 mb-xl-0">
-            <CButton @click="openModal('register', '')" color="info">Nuevo</CButton>
-          </CCol>
+          <CButton @click="openModal('register', '')" color="info">Nuevo</CButton>
+        </CCol>
+        <br>
+        <template>
+
+          <div class="col-md-12">
+              <div class="input-group">
+                  <select class="form-control col-md-4" v-model="criterio">
+                      <option value="nombre">Nombre</option>
+                      <option value="correo">Correo</option>
+                  </select>
+                  <input type="text" v-model="buscar" class="form-control" placeholder="Ingrese el criterio que desea buscar">
+
+                  <button @click="listarUsuarios(buscar, criterio)" type="submit" class="btn btn-info"> Buscar</button>
+              </div>
+          </div>
+
+        </template>
         <CCardBody>
           <CDataTable
             hover
@@ -185,6 +201,8 @@ export default {
       errorUser: 0,
       errorShowMessageUser: [],
       tituloModalActivar: '',
+      buscar: '',
+      criterio: 'nombre',
     }
   },
   watch: {
@@ -361,6 +379,23 @@ export default {
       .then(function () {
       });
       
+    },
+    listarUsuarios(buscar, criterio){
+      let me = this;
+      if(buscar === ''){
+        setTimeout(() => me.getUsuarios(), 1000);
+      }
+      else{
+        var response = axios.get(`http://localhost:4500/usuarios/criterios/${buscar}/${criterio}`)
+        .then(function (response) {
+          me.items = response.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+        .then(function () {
+        });
+      }
     },
   },
   mounted(){
