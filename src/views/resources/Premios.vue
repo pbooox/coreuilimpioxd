@@ -21,6 +21,18 @@
             @page-change="pageChange"
           >
 
+          <template #departamento="data">
+            <td>
+              <label><strong>
+                {{getBadge2(data.item.departamento)}}
+              </strong></label>
+            </td>
+          </template>
+
+          <template #imagenes="data">
+            <img :src=data.item.imagen class="img-responsive" height="84" width="97">
+          </template>
+
           <template #estado="data">
             <td>
               <CBadge :color="getBadge(data.item.estado)">
@@ -48,88 +60,96 @@
           </CDataTable>
 
 
-          <sweet-modal ref="nuevo_usuario" :title="titleModal" hide-close-button blocking>
+          <sweet-modal ref="nuevo_usuario" width="75%" :title="titleModal" hide-close-button blocking>
             <!-- START FORM -->
-            <div class="form-group">
-              <CInput
-                label="Nombre"
-                placeholder="Ingresa el nombre"
-                v-model="nombre"
-              />
-              <label>Imagen</label><br>
-              <input type="file" @change="processFile($event)" />
-              <div>
+            <div class="card-form">
+              <div class="form-group">
+                <CInput
+                  label="Nombre"
+                  placeholder="Ingresa el nombre"
+                  v-model="nombre"
+                />
+                <label>Imagen</label><br>
+                <input type="file" @change="processFile($event)" />
+                <div>
+                  <br>
+                </div>
+                <CInput
+                  label="Cantidad de premios disponibles"
+                  placeholder="Ingresa la cantidad de premios"
+                  v-model="cantidad"
+                  type="number"
+                  min="0"
+                />
+                <CInput
+                  label="Fichas para canje"
+                  placeholder="Ingresa la cantidad de fichas necesarias"
+                  v-model="fichas"
+                  type="number"
+                  min="0"
+                />
+                <label>Tipo de premio</label>
+                <select class="form-control " v-model="tipo">
+                  <option value="Seleccione" disabled>Seleccione...</option>
+                  <option value="amarillo">Amarillo</option>
+                  <option value="morado">Morado</option>
+                  <option value="blanco">Blanco</option>
+                  <option value="rojo">Rojo</option>
+                </select>
                 <br>
+                <label>Departamento</label>
+                <select class="form-control " v-model="departamento">
+                  <option value="" disabled>Seleccione...</option>
+                  <option value="xela">Xela</option>
+                  <option value="guate">Guate</option>
+                  <option value="reu">Reu</option>
+                  <option value="mazate">Mazate</option>
+                  <option value="huehue">Huehue</option>
+                  <option value="toto">Toto</option>
+                  <option value="san_marcos">San Marcos</option>
+                </select>
               </div>
-              <CInput
-                label="Cantidad de premios disponibles"
-                placeholder="Ingresa la cantidad de premios"
-                v-model="cantidad"
-                type="number"
-                min="0"
-              />
-              <CInput
-                label="Fichas para canje"
-                placeholder="Ingresa la cantidad de fichas necesarias"
-                v-model="fichas"
-                type="number"
-                min="0"
-              />
-              <label>Tipo de premio</label>
-              <select class="form-control " v-model="tipo">
-                <option value="Seleccione" disabled>Seleccione...</option>
-                <option value="amarillo">Amarillo</option>
-                <option value="morado">Morado</option>
-                <option value="blanco">Blanco</option>
-                <option value="rojo">Rojo</option>
-              </select>
-              <br>
-              <label>Departamento</label>
-              <select class="form-control " v-model="departamento">
-                <option value="" disabled>Seleccione...</option>
-                <option value="xela">Xela</option>
-                <option value="guate">Guate</option>
-                <option value="reu">Reu</option>
-                <option value="mazate">Mazate</option>
-                <option value="huehue">Huehue</option>
-                <option value="toto">Toto</option>
-                <option value="san_marcos">San Marcos</option>
-              </select>
-              <br>
-              <CInput
-                label="Descripción del premio"
-                placeholder="Ingresa la descripción"
-                v-model="descripcion"
-              />
-              <CInput
-                label="Dirección del premio"
-                placeholder="Ingresa la dirección para canje"
-                v-model="direccion"
-              />
-              <CInput
-                label="Empresa"
-                placeholder="Ingresa el nombre de la empresa"
-                v-model="empresa"
-              />
-              <CInput
-                label="Contacto"
-                placeholder="Ingresa el contacto de la empresa"
-                v-model="contacto"
-              />
-              <CInput
-                label="Fecha de vencimiento del canje"
-                placeholder="Ingresa el nombre"
-                v-model="vencimiento"
-                type="date"
-              />
-              
-              
-              <CCard v-show="errorPremio" color="danger" class="text-center" body-wrapper text-color="white">
-                <blockquote v-for="error in errorShowMessagePremio" :key="error" v-text="error" class="card-blockquote">
-                  
-                </blockquote>
-              </CCard>
+              <div class="form-group">
+                <CInput
+                  label="Descripción del premio"
+                  placeholder="Ingresa la descripción"
+                  v-model="descripcion"
+                />
+                <CInput
+                  label="Dirección del premio"
+                  placeholder="Ingresa la dirección para canje"
+                  v-model="direccion"
+                />
+                <CInput
+                  label="Empresa"
+                  placeholder="Ingresa el nombre de la empresa"
+                  v-model="empresa"
+                />
+                <CInput
+                  label="Contacto"
+                  placeholder="Ingresa el contacto de la empresa"
+                  v-model="contacto"
+                />
+                <CInput
+                  label="Fecha de vencimiento del canje"
+                  placeholder="Ingresa el nombre"
+                  v-model="vencimiento"
+                  type="date"
+                />
+
+
+
+                  <!-- <input @click="habilitarBoton()" v-model="btnGuardar2" type="checkbox">
+                  <label>Usar imagen previa</label> -->
+
+              </div>
+                
             </div>
+            <CCard v-show="errorPremio" color="danger" class="text-center" body-wrapper text-color="white">
+              <blockquote v-for="error in errorShowMessagePremio" :key="error" v-text="error" class="card-blockquote">
+                
+              </blockquote>
+            </CCard>
             
             <!-- END FORM -->
             <!-- START BUTTONS -->
@@ -140,6 +160,7 @@
               class="btn btn-info"
               data-style="expand-right"
               v-if="typeAction == 1"
+              :disabled="btnGuardar"
               @click="savePremio()"
             >Guardar</button>
             <button
@@ -148,6 +169,7 @@
               class="btn btn-info"
               data-style="expand-right"
               v-if="typeAction == 2"
+              :disabled="btnGuardar"
               @click="updatePremio()"
             >Actualizar</button>
             <!-- END BUTTONS -->
@@ -205,8 +227,10 @@ export default {
         { key: 'nombre', label: 'Nombre', _classes: 'font-weight-bold' },
         { key: 'tipo', label: 'Tipo de premio' },
         { key: 'cantidad', label: 'Premios restantes'},
+        { key: 'departamento', label: 'Departamento'},
         { key: 'empresa', label: 'Empresa'},
         { key: 'contacto', label: 'Contacto de empresa'},
+        { key: 'imagenes', label: 'Imagen' },
         { key: 'estado', label: 'Estado'},
         { key: 'acciones', label: 'Acciones'}
       ],
@@ -229,11 +253,15 @@ export default {
       imagen: '',
       url_imagen: '',
       estado: '',
+      mismaImagen: true,
+      checkboxmanual: false,
       cantidad: 0,
       errorPremio: 0,
       errorShowMessagePremio: [],
       CLOUDINARY_URL: 'https://api.cloudinary.com/v1_1/dxj44eizq/image/upload',
       CLOUDINARY_UPLOAD_PRESET: 'pw39sleo',
+      btnGuardar: true,
+      imagenPrevia: '',
     }
   },
   watch: {
@@ -252,6 +280,7 @@ export default {
       this.GuardarImagen();
     },
     GuardarImagen() {
+      this.btnGuardar = true;
       let formData = new FormData();
       formData.append("file", this.imagen); // le damos los datos de la imagen luego que se lleno en la funcion processFile()
       formData.append("upload_preset", this.CLOUDINARY_UPLOAD_PRESET); // le damos nuestro preset
@@ -263,6 +292,7 @@ export default {
         .catch(error => console.log("ocurrio un error " , error)); //capturamos un posible error
     },
     AsignarURL(url){
+      setTimeout(() => this.btnGuardar = false, 1000);
       this.url_imagen = url;
     },
     openModal(accion, data = []){
@@ -292,9 +322,11 @@ export default {
           this.empresa = data.empresa;
           this.vencimiento = venc;
           this.imagen = data.imagen;
+          this.imagenPrevia = data.imagen;
           this.cantidad = data.cantidad;
           this.ubicacion = data.ubicacion;
           this.departamento = data.departamento;
+          this.btnGuardar = false;
           break;
         }
         case 'deactivate':
@@ -355,11 +387,18 @@ export default {
       this.id = '';
       
     },
+    cambiarImagen(){
+      if(this.checkboxmanual === false){
+        this.mismaImagen === true;
+      }
+      else{
+        this.mismaImagen === false;
+      }
+    },
     savePremio(){
       if (this.validatePremio()){
         return;
       }
-      console.log(this.url_imagen)
       let me = this;
       axios.post(`https://secret-brushlands-88440.herokuapp.com/premios/nuevo`,{
         nombre: this.nombre,
@@ -388,7 +427,6 @@ export default {
       if (this.validatePremio()){
           return;
       }
-      this.GuardarImagen();
       let me = this;
       axios.post(`https://secret-brushlands-88440.herokuapp.com/premios/actualizar`,{
         _id: this.id,
@@ -401,7 +439,7 @@ export default {
         contacto: this.contacto,
         empresa: this.empresa,
         vencimiento: this.vencimiento,
-        imagen: this.imagen,
+        imagen: this.url_imagen,
         departamento: this.departamento,
         cantidad: this.cantidad,
       }).then(function (response) {
@@ -454,7 +492,7 @@ export default {
       if (this.contacto === '') this.errorShowMessagePremio.push('El contacto es obligatorio')
       if (this.direccion === '') this.errorShowMessagePremio.push('La dirección es obligatoria')
       if (this.tipo === 'Seleccione') this.errorShowMessagePremio.push('Seleccione un tipo de premio')
-      if (!this.url_imagen) this.errorShowMessagePremio.push('Inserte una imagen')
+      if (this.url_imagen == ''){ this.url_imagen = this.imagen}
       
 
       if (this.errorShowMessagePremio.length) this.errorPremio = 1;
@@ -465,6 +503,17 @@ export default {
         case 'Activo': return 'success'
         case 'Inactivo': return 'danger'
         default: 'primary'
+      }
+    },
+    getBadge2 (departamento) {
+      switch (departamento) {
+        case 'xela': return 'Xela'
+        case 'san_marcos': return 'San Marcos'
+        case 'guate': return 'Guate'
+        case 'reu': return 'Reu'
+        case 'mazate': return 'Mazate'
+        case 'huehue': return 'Huehue'
+        case 'toto': return 'Toto'
       }
     },
     pageChange (val) {

@@ -272,7 +272,7 @@ export default {
           return;
       }
       let me = this;
-      axios.post(`http://localhost:4500/crear-usuario`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/crear-usuario`,{
         nombre: this.nombre,
         email: this.correo,
         password: this.contra1,
@@ -292,7 +292,7 @@ export default {
           return;
       }
       let me = this;
-      axios.post(`http://localhost:4500/actualizar-usuario`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/actualizar-usuario`,{
         _id: this.id,
         nombre: this.nombre,
         email: this.correo,
@@ -310,7 +310,7 @@ export default {
     },
     deactivateUser(){
       let me = this;
-      axios.post(`http://localhost:4500/desactivar-usuario`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/desactivar-usuario`,{
         _id: this.id,
       }).then(function (response) {
          toastr.success(response.data, "Listo");
@@ -324,7 +324,7 @@ export default {
     },
     activateUser(){
       let me = this;
-      axios.post(`http://localhost:4500/activar-usuario`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/activar-usuario`,{
         _id: this.id,
       }).then(function (response) {
         toastr.success(response.data, "Listo");
@@ -369,7 +369,7 @@ export default {
     },
     getUsuarios(){
       let me = this;
-      var response = axios.get(`http://localhost:4500/usuarios`)
+      var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/usuarios`)
       .then(function (response) {
         me.items = response.data
       })
@@ -386,7 +386,7 @@ export default {
         setTimeout(() => me.getUsuarios(), 1000);
       }
       else{
-        var response = axios.get(`http://localhost:4500/usuarios/criterios/${buscar}/${criterio}`)
+        var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/usuarios/criterios/${buscar}/${criterio}`)
         .then(function (response) {
           me.items = response.data
         })
