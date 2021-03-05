@@ -88,6 +88,7 @@ export default {
     return {
       fields: [
         { key: 'id', label: 'Número', _classes: 'font-weight-bold' },
+        { key: 'nombre', label: 'Nombre'},
         { key: 'registro' },
         { key: 'imagenes', label: 'Imagen' },
         { key: 'acciones', label: 'Acciones'}
