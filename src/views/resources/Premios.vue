@@ -7,8 +7,26 @@
         </CCardHeader>
         <br>
         <CCol col="2" sm="2" md="2" xl class="mb-3 mb-xl-0">
-            <CButton @click="openModal('register', '')" color="info">Nuevo</CButton>
-          </CCol>
+          <CButton @click="openModal('register', '')" color="info">Nuevo</CButton>
+        </CCol>
+        <br>
+        <template>
+
+          <div class="col-md-12">
+              <div class="input-group">
+                  <select class="form-control col-md-4" v-model="criterio">
+                      <option value="nombre">Nombre</option>
+                      <option value="tipo">Tipo de premio</option>
+                      <option value="departamento">Departamento</option>
+                      <option value="empresa">Empresa</option>
+                  </select>
+                  <input type="text" v-model="buscar" class="form-control" placeholder="Ingrese el criterio que desea buscar">
+
+                  <button @click="listarPremios(buscar, criterio)" type="submit" class="btn btn-info"> Buscar</button>
+              </div>
+          </div>
+
+        </template>
         <CCardBody>
           <CDataTable
             hover
@@ -51,8 +69,7 @@
                 <button @click="openModal('update', data.item)" class="btn btn-info">Editar</button>
                 
                 <!-- Preguntar si se deja editar y desactivar escrito o solo los iconos -->
-                <button @click="openModal('deactivate', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-danger">Desactivar</button>
-                <button @click="openModal('activate', data.item)" v-else class="btn btn-success">Activar</button>
+                <button @click="openModal('deactivate', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-danger">Eliminar</button>
               </div>
             </td>
           </template>
@@ -262,6 +279,8 @@ export default {
       CLOUDINARY_UPLOAD_PRESET: 'pw39sleo',
       btnGuardar: true,
       imagenPrevia: '',
+      buscar: '',
+      criterio: 'nombre',
     }
   },
   watch: {
@@ -288,7 +307,7 @@ export default {
       //subiendo imagen con fetch
       fetch(this.CLOUDINARY_URL, { method: "POST", body: formData })
         .then(response => response.json()) //convertimos la respuesta en json
-        .then(data => this.AsignarURL(data.url))// obtenemos la url de la imagen guardada
+        .then(data => this.AsignarURL(data.secure_url))// obtenemos la url de la imagen guardada
         .catch(error => console.log("ocurrio un error " , error)); //capturamos un posible error
     },
     AsignarURL(url){
@@ -332,7 +351,7 @@ export default {
         case 'deactivate':
         {
           this.$refs.activar_modal.open();
-          this.tituloModalActivar = '¿Desea cancelar el canje?'
+          this.tituloModalActivar = '¿Desea eliminar el cupón?'
           this.id = data._id
           this.typeAction = 3
           break;
@@ -400,7 +419,7 @@ export default {
         return;
       }
       let me = this;
-      axios.post(`https://secret-brushlands-88440.herokuapp.com/premios/nuevo`,{
+      axios.post(`http://localhost:4500/premios/nuevo`,{
         nombre: this.nombre,
         fichas: this.fichas,
         tipo: this.tipo,
@@ -415,6 +434,7 @@ export default {
         departamento: this.departamento,
       }).then(function (response) {
         toastr.success(response.data.message, 'Listo');
+        console.log(response.data.message)
         me.items = null;
         setTimeout(() => me.getPremios(), 1000);
       })
@@ -428,7 +448,7 @@ export default {
           return;
       }
       let me = this;
-      axios.post(`https://secret-brushlands-88440.herokuapp.com/premios/actualizar`,{
+      axios.post(`http://localhost:4500/premios/actualizar`,{
         _id: this.id,
         nombre: this.nombre,
         fichas: this.fichas,
@@ -454,21 +474,7 @@ export default {
     },
     deactivatePremio(){
       let me = this;
-      axios.post(`https://secret-brushlands-88440.herokuapp.com/desactivar-premio`,{
-        _id: this.id,
-      }).then(function (response) {
-        toastr.success(response.data, "Listo");
-        me.items = null;
-        setTimeout(() => me.getPremios(), 1000);
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-      this.closeModal();
-    },
-    activatePremio(){
-      let me = this;
-      axios.post(`https://secret-brushlands-88440.herokuapp.com/activar-premio`,{
+      axios.post(`http://localhost:4500/desactivar-premio`,{
         _id: this.id,
       }).then(function (response) {
         toastr.success(response.data, "Listo");
@@ -486,7 +492,7 @@ export default {
       if (!this.nombre) this.errorShowMessagePremio.push('El nombre de usuario no puede estar vacío');
       if (this.departamento === '') this.errorShowMessagePremio.push('El departamento es obligatorio');
       if (this.cantidad === 0) this.errorShowMessagePremio.push('La cantidad de premios no puede ser cero');
-      if (this.cantidad === 0) this.errorShowMessagePremio.push('La cantidad de fichas no puede ser cero');
+      if (this.fichas === 0) this.errorShowMessagePremio.push('La cantidad de fichas no puede ser cero');
       if (!this.vencimiento) this.errorShowMessagePremio.push('El vencimiento del premio es obligatorio');
       if (this.empresa === '') this.errorShowMessagePremio.push('La empresa es obligatoria')
       if (this.contacto === '') this.errorShowMessagePremio.push('El contacto es obligatorio')
@@ -521,7 +527,7 @@ export default {
     },
     getPremios(){
       let me = this;
-      var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/premios2`)
+      var response = axios.get(`http://localhost:4500/premios2`)
       .then(function (response) {
         me.items = response.data
       })
@@ -531,6 +537,23 @@ export default {
       .then(function () {
       });
       
+    },
+    listarPremios(buscar, criterio){
+      let me = this;
+      if(buscar === ''){
+        setTimeout(() => me.getImagenes(), 1000);
+      }
+      else{
+        var response = axios.get(`http://localhost:4500/premios/criterios/${buscar}/${criterio}`)
+        .then(function (response) {
+          me.items = response.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+        .then(function () {
+        });
+      }
     },
   },
   mounted(){

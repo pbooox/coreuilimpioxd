@@ -39,9 +39,8 @@
                 <button @click="openModal('update', data.item)" class="btn btn-info">Editar</button>
                 
                 <!-- Preguntar si se deja editar y desactivar escrito o solo los iconos -->
-                <button @click="openModal('deactivate', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-success">Cancelar cupón</button>
-                <button @click="openModal('activate', data.item)" v-else class="btn btn-danger">Reactivar cupón</button>
-                <button @click="openModal('canjear', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-info">Canjear cupón</button>
+                <button @click="openModal('deactivate', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-danger">Eliminar cupón</button>
+                <button @click="openModal('canjear', data.item)" v-if="data.item.estado==='Activo'" class="btn btn-success">Canjear cupón</button>
                 
               </div>
             </td>
@@ -184,6 +183,7 @@ export default {
       descripcion: '',
       errorCanje: 0,
       errorShowMessageCanje: [],
+      vencimiento: '',
     }
   },
   watch: {

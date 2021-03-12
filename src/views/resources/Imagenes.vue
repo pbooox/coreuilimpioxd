@@ -5,6 +5,21 @@
         <CCardHeader>
           Imagen
         </CCardHeader>
+        <template>
+
+          <div class="col-md-12">
+              <div class="input-group">
+                  <select class="form-control col-md-4" v-model="criterio">
+                      <option value="nombre">Nombre</option>
+                      <option value="numero">Numero</option>
+                  </select>
+                  <input type="text" v-model="buscar" class="form-control" placeholder="Ingrese el criterio que desea buscar">
+
+                  <button @click="listarImagenes(buscar, criterio)" type="submit" class="btn btn-info"> Buscar</button>
+              </div>
+          </div>
+
+        </template>
         <CCardBody>
           <CDataTable
             hover
@@ -106,6 +121,8 @@ export default {
       url_imagen: '',
       CLOUDINARY_URL: 'https://api.cloudinary.com/v1_1/dxj44eizq/image/upload',
       CLOUDINARY_UPLOAD_PRESET: 'pw39sleo',
+      buscar: '',
+      criterio: 'nombre',
     }
   },
   watch: {
@@ -145,7 +162,7 @@ export default {
       //subiendo imagen con fetch
       fetch(this.CLOUDINARY_URL, { method: "POST", body: formData })
         .then(response => response.json()) //convertimos la respuesta en json
-        .then(data => this.AsignarURL(data.url))// obtenemos la url de la imagen guardada
+        .then(data => this.AsignarURL(data.secure_url))// obtenemos la url de la imagen guardada
         .catch(error => console.log("ocurrio un error " , error)); //capturamos un posible error
     },
     AsignarURL(url){
@@ -214,6 +231,23 @@ export default {
       .then(function () {
       });
       
+    },
+    listarImagenes(buscar, criterio){
+      let me = this;
+      if(buscar === ''){
+        setTimeout(() => me.getImagenes(), 1000);
+      }
+      else{
+        var response = axios.get(`http://localhost:4500/imagenes/criterios/${buscar}/${criterio}`)
+        .then(function (response) {
+          me.items = response.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+        .then(function () {
+        });
+      }
     },
   },
   mounted(){
