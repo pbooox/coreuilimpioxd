@@ -21,6 +21,7 @@ const Premios = () => import('@/views/resources/Premios')
 const Imagenes = () => import('@/views/resources/Imagenes')
 const Actualizaciones = () => import('@/views/resources/Actualizaciones')
 const Canjes = () => import('@/views/resources/Canjes')
+const Jugadores = () => import('@/views/resources/Jugadores')
 
 Vue.use(Router)
 
@@ -131,6 +132,24 @@ function configRoutes () {
               path: '',
               name: 'Actualizaciones',
               component: Actualizaciones
+            },
+          ]
+        },
+        {
+          path: 'jugadores',
+          meta: {
+            label: 'Jugadores'
+          },
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: [
+            {
+              path: '',
+              name: 'Jugadores',
+              component: Jugadores
             },
           ]
         },

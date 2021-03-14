@@ -419,7 +419,7 @@ export default {
         return;
       }
       let me = this;
-      axios.post(`http://localhost:4500/premios/nuevo`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/premios/nuevo`,{
         nombre: this.nombre,
         fichas: this.fichas,
         tipo: this.tipo,
@@ -448,7 +448,7 @@ export default {
           return;
       }
       let me = this;
-      axios.post(`http://localhost:4500/premios/actualizar`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/premios/actualizar`,{
         _id: this.id,
         nombre: this.nombre,
         fichas: this.fichas,
@@ -474,7 +474,7 @@ export default {
     },
     deactivatePremio(){
       let me = this;
-      axios.post(`http://localhost:4500/desactivar-premio`,{
+      axios.post(`https://secret-brushlands-88440.herokuapp.com/desactivar-premio`,{
         _id: this.id,
       }).then(function (response) {
         toastr.success(response.data, "Listo");
@@ -527,7 +527,7 @@ export default {
     },
     getPremios(){
       let me = this;
-      var response = axios.get(`http://localhost:4500/premios2`)
+      var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/premios2`)
       .then(function (response) {
         me.items = response.data
       })
@@ -544,7 +544,7 @@ export default {
         setTimeout(() => me.getImagenes(), 1000);
       }
       else{
-        var response = axios.get(`http://localhost:4500/premios/criterios/${buscar}/${criterio}`)
+        var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/premios/criterios/${buscar}/${criterio}`)
         .then(function (response) {
           me.items = response.data
         })

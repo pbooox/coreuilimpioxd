@@ -238,7 +238,7 @@ export default {
         setTimeout(() => me.getImagenes(), 1000);
       }
       else{
-        var response = axios.get(`http://localhost:4500/imagenes/criterios/${buscar}/${criterio}`)
+        var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/imagenes/criterios/${buscar}/${criterio}`)
         .then(function (response) {
           me.items = response.data
         })

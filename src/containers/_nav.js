@@ -47,7 +47,12 @@ export default [
         to: '/users',
         icon: 'cil-people'
       },
-      
+      {
+        _name: 'CSidebarNavItem',
+        name: 'Jugadores',
+        to: '/jugadores',
+        icon: 'cil-people'
+      },
     ]
   }
 ]
