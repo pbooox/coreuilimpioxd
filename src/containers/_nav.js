@@ -51,7 +51,7 @@ export default [
         _name: 'CSidebarNavItem',
         name: 'Jugadores',
         to: '/jugadores',
-        icon: 'cil-people'
+        icon: 'cil-user'
       },
     ]
   }

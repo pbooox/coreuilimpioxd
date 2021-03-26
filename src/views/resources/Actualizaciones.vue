@@ -41,7 +41,10 @@ export default {
         { key: 'role' },
         { key: 'status' }
       ],
-      activePage: 1
+      activePage: 1,
+      items: null,
+      titleModal: "",
+      typeAction: 1,
     }
   },
   watch: {
