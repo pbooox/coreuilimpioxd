@@ -40,7 +40,7 @@ export default [
         to: '/actualizaciones',
         icon: 'cil-list'
       },
-      
+
       {
         _name: 'CSidebarNavItem',
         name: 'Usuarios',
@@ -52,6 +52,18 @@ export default [
         name: 'Jugadores',
         to: '/jugadores',
         icon: 'cil-user'
+      },
+      {
+        _name: 'CSidebarNavItem',
+        name: 'Departamentos',
+        to: '/departamentos',
+        icon: 'cil-location-pin'
+      },
+      {
+        _name: 'CSidebarNavItem',
+        name: 'Municipios',
+        to: '/municipios',
+        icon: 'cil-location-pin'
       },
     ]
   }

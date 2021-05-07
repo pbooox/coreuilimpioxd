@@ -2,23 +2,70 @@
   <CRow>
     <CCol col="12" xl="8">
       <CCard>
-        <CCardHeader>
-          Imagen
-        </CCardHeader>
+        <CCardHeader> Imagen del reverso </CCardHeader>
+        <CCardBody>
+          <CDataTable
+            hover
+            striped
+            :items="items2"
+            :fields="fields2"
+            :items-per-page="10"
+            :active-page="activePage"
+            :pagination="{ doubleArrows: false, align: 'center' }"
+            @page-change="pageChange"
+          >
+            <template #imagenes="data">
+              <img
+                :src="data.item.urlR"
+                class="img-responsive"
+                height="70"
+                width="46"
+              />
+            </template>
+            <template #acciones="data">
+              <td>
+                <div
+                  class="btn-group mr-2"
+                  role="group"
+                  aria-label="First group"
+                >
+                  <button
+                    @click="openModal('update2', data.item)"
+                    class="btn btn-info"
+                  >
+                    Editar
+                  </button>
+                </div>
+              </td>
+            </template>
+          </CDataTable>
+        </CCardBody>
+
+        <CCardHeader> Imagen </CCardHeader>
         <template>
-
+          <br />
           <div class="col-md-12">
-              <div class="input-group">
-                  <select class="form-control col-md-4" v-model="criterio">
-                      <option value="nombre">Nombre</option>
-                      <option value="numero">Numero</option>
-                  </select>
-                  <input type="text" v-model="buscar" class="form-control" placeholder="Ingrese el criterio que desea buscar">
+            <div class="input-group">
+              <select class="form-control col-md-4" v-model="criterio">
+                <option value="nombre">Nombre</option>
+                <option value="numero">Numero</option>
+              </select>
+              <input
+                type="text"
+                v-model="buscar"
+                class="form-control"
+                placeholder="Ingrese el criterio que desea buscar"
+              />
 
-                  <button @click="listarImagenes(buscar, criterio)" type="submit" class="btn btn-info"> Buscar</button>
-              </div>
+              <button
+                @click="listarImagenes(buscar, criterio)"
+                type="submit"
+                class="btn btn-info"
+              >
+                Buscar
+              </button>
+            </div>
           </div>
-
         </template>
         <CCardBody>
           <CDataTable
@@ -28,59 +75,106 @@
             :fields="fields"
             :items-per-page="10"
             :active-page="activePage"
-            :pagination="{ doubleArrows: false, align: 'center'}"
+            :pagination="{ doubleArrows: false, align: 'center' }"
             @page-change="pageChange"
           >
-          
-          <template #imagenes="data">
-            <img :src=data.item.urlC class="img-responsive" height="70" width="46">
-          </template>
-          <template #acciones="data">
-            <td>
-
-              <div class="btn-group mr-2"
-                role="group"
-                aria-label="First group"
-              >
-                <button @click="openModal('update', data.item)" class="btn btn-info">Editar</button>
-              </div>
-            </td>
-          </template>
+            <template #imagenes="data">
+              <img
+                :src="data.item.urlC"
+                class="img-responsive"
+                height="70"
+                width="46"
+              />
+            </template>
+            <template #acciones="data">
+              <td>
+                <div
+                  class="btn-group mr-2"
+                  role="group"
+                  aria-label="First group"
+                >
+                  <button
+                    @click="openModal('update', data.item)"
+                    class="btn btn-info"
+                  >
+                    Editar
+                  </button>
+                </div>
+              </td>
+            </template>
           </CDataTable>
-          <sweet-modal ref="nuevo_usuario" :title="titleModal" hide-close-button blocking>
+          <sweet-modal
+            ref="nuevo_usuario"
+            :title="titleModal"
+            hide-close-button
+            blocking
+          >
             <!-- START FORM -->
             <div class="form-group">
-              <label>Imagen actual</label><br>
-              <img :src=imagenPrevia class="img-responsive" height="140" width="92">
+              <label>Imagen actual</label><br />
+              <img
+                :src="imagenPrevia"
+                class="img-responsive"
+                height="140"
+                width="92"
+              />
               <div>
-                <br>
+                <br />
               </div>
-              <label>Imagen nueva</label><br>
+              <label>Imagen nueva</label><br />
               <input type="file" @change="processFile($event)" />
               <div>
-                <br>
+                <br />
               </div>
-              
-              
-              <CCard v-show="errorImagen" color="danger" class="text-center" body-wrapper text-color="white">
-                <blockquote v-for="error in errorShowMessageImagen" :key="error" v-text="error" class="card-blockquote">
-                  
-                </blockquote>
+
+              <CCard
+                v-show="errorImagen"
+                color="danger"
+                class="text-center"
+                body-wrapper
+                text-color="white"
+              >
+                <blockquote
+                  v-for="error in errorShowMessageImagen"
+                  :key="error"
+                  v-text="error"
+                  class="card-blockquote"
+                ></blockquote>
               </CCard>
             </div>
-            
+
             <!-- END FORM -->
             <!-- START BUTTONS -->
-            <button slot="button" type="button" class="btn btn-danger" @click="closeModal()">Cancelar</button>
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-danger"
+              @click="closeModal()"
+            >
+              Cancelar
+            </button>
             <button
               slot="button"
               type="button"
               class="btn btn-info"
               data-style="expand-right"
               v-if="typeAction == 2"
-              :disabled = btnGuardar
+              :disabled="btnGuardar"
               @click="updateImagen()"
-            >Actualizar</button>
+            >
+              Actualizar
+            </button>
+            <button
+              slot="button"
+              type="button"
+              class="btn btn-info"
+              data-style="expand-right"
+              v-if="typeAction == 3"
+              :disabled="btnGuardar"
+              @click="updateReverso()"
+            >
+              Actualizar
+            </button>
             <!-- END BUTTONS -->
           </sweet-modal>
         </CCardBody>
@@ -90,66 +184,78 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 import { SweetModal, SweetModalTab } from "sweet-modal-vue";
 
 export default {
-   components: {
+  components: {
     SweetModal,
-    SweetModalTab
+    SweetModalTab,
   },
-  name: 'Imagen',
-  data () {
+  name: "Imagen",
+  data() {
     return {
       fields: [
-        { key: 'id', label: 'Número', _classes: 'font-weight-bold' },
-        { key: 'nombre', label: 'Nombre'},
-        { key: 'registro' },
-        { key: 'imagenes', label: 'Imagen' },
-        { key: 'acciones', label: 'Acciones'}
+        { key: "id", label: "Número", _classes: "font-weight-bold" },
+        { key: "nombre", label: "Nombre" },
+        { key: "registro" },
+        { key: "imagenes", label: "Imagen" },
+        { key: "acciones", label: "Acciones" },
+      ],
+      fields2: [
+        { key: "nombre", label: "Nombre" },
+        { key: "registro" },
+        { key: "imagenes", label: "Imagen" },
+        { key: "acciones", label: "Acciones" },
       ],
       activePage: 1,
       items: null,
+      items2: null,
       titleModal: "",
       typeAction: 1,
       errorImagen: 0,
       errorShowMessageImagen: [],
-      id: '',
-      imagen: '',
-      imagenPrevia: '',
+      id: "",
+      imagen: "",
+      imagenPrevia: "",
       btnGuardar: true,
-      url_imagen: '',
-      CLOUDINARY_URL: 'https://api.cloudinary.com/v1_1/dxj44eizq/image/upload',
-      CLOUDINARY_UPLOAD_PRESET: 'pw39sleo',
-      buscar: '',
-      criterio: 'nombre',
-    }
+      url_imagen: "",
+      CLOUDINARY_URL: "https://api.cloudinary.com/v1_1/dxj44eizq/image/upload",
+      CLOUDINARY_UPLOAD_PRESET: "pw39sleo",
+      buscar: "",
+      criterio: "nombre",
+    };
   },
   watch: {
     $route: {
       immediate: true,
-      handler (route) {
+      handler(route) {
         if (route.query && route.query.page) {
-          this.activePage = Number(route.query.page)
+          this.activePage = Number(route.query.page);
         }
-      }
-    }
+      },
+    },
   },
   methods: {
-    getBadge (status) {
+    getBadge(status) {
       switch (status) {
-        case 'Active': return 'success'
-        case 'Inactive': return 'secondary'
-        case 'Pending': return 'warning'
-        case 'Banned': return 'danger'
-        default: 'primary'
+        case "Active":
+          return "success";
+        case "Inactive":
+          return "secondary";
+        case "Pending":
+          return "warning";
+        case "Banned":
+          return "danger";
+        default:
+          "primary";
       }
     },
-    rowClicked (item, index) {
-      this.$router.push({path: `users/${index + 1}`})
+    rowClicked(item, index) {
+      this.$router.push({ path: `users/${index + 1}` });
     },
-    pageChange (val) {
-      this.$router.push({ query: { page: val }})
+    pageChange(val) {
+      this.$router.push({ query: { page: val } });
     },
     processFile(event) {
       this.imagen = event.target.files[0];
@@ -161,97 +267,147 @@ export default {
       formData.append("upload_preset", this.CLOUDINARY_UPLOAD_PRESET); // le damos nuestro preset
       //subiendo imagen con fetch
       fetch(this.CLOUDINARY_URL, { method: "POST", body: formData })
-        .then(response => response.json()) //convertimos la respuesta en json
-        .then(data => this.AsignarURL(data.secure_url))// obtenemos la url de la imagen guardada
-        .catch(error => console.log("ocurrio un error " , error)); //capturamos un posible error
+        .then((response) => response.json()) //convertimos la respuesta en json
+        .then((data) => this.AsignarURL(data.secure_url)) // obtenemos la url de la imagen guardada
+        .catch((error) => console.log("ocurrio un error ", error)); //capturamos un posible error
     },
-    AsignarURL(url){
-      setTimeout(() => this.btnGuardar = false, 1000);
+    AsignarURL(url) {
+      setTimeout(() => (this.btnGuardar = false), 1000);
       this.url_imagen = url;
     },
-    openModal(accion, data = []){
+    openModal(accion, data = []) {
       let me = this;
-      
+
       switch (accion) {
         case "update": {
           me.$refs.nuevo_usuario.open();
-          this.titleModal = "Actualizar Premio";
+          this.titleModal = "Actualizar Imagen";
           this.typeAction = 2;
           this.id = data._id;
           this.imagen = data.urlC;
           this.imagenPrevia = data.urlC;
           break;
         }
+        case "update2": {
+          me.$refs.nuevo_usuario.open();
+          this.titleModal = "Actualizar Imagen del reverso";
+          this.typeAction = 3;
+          this.id = data._id;
+          this.imagen = data.urlR;
+          this.imagenPrevia = data.urlR;
+          break;
+        }
       }
     },
-    closeModal(){
+    closeModal() {
       this.$refs.nuevo_usuario.close();
-      this.id = '';
-      this.imagen = '';
+      this.id = "";
+      this.imagen = "";
       this.errorImagen = 0;
       this.errorShowMessageImagen = [];
       this.btnGuardar = true;
     },
-    updateImagen(){
-      if (this.validateImagen()){
+    updateImagen() {
+      if (this.validateImagen()) {
         return;
       }
       let me = this;
-      axios.post(`https://secret-brushlands-88440.herokuapp.com/imagenes/actualizar`,{
-        _id: this.id,
-        imagen: this.url_imagen,
-      }).then(function (response) {
-        console.log('listo')
-        me.items = null;
-        setTimeout(() => me.getImagenes(), 1000);
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+      axios
+        .post(
+          `https://secret-brushlands-88440.herokuapp.com/imagenes/actualizar`,
+          {
+            _id: this.id,
+            imagen: this.url_imagen,
+          }
+        )
+        .then(function (response) {
+          console.log("listo");
+          me.items = null;
+          setTimeout(() => me.getImagenes(), 1000);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
       this.closeModal();
     },
-    validateImagen(){
+    updateReverso() {
+      if (this.validateImagen()) {
+        return;
+      }
+      let me = this;
+      axios
+        .post(
+          `https://secret-brushlands-88440.herokuapp.com/reverso/actualizar`,
+          {
+            _id: this.id,
+            imagen: this.url_imagen,
+          }
+        )
+        .then(function (response) {
+          console.log("listo");
+          me.items = null;
+          setTimeout(() => me.getRearImage(), 1000);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      this.closeModal();
+    },
+    validateImagen() {
       this.errorImagen = 0;
       this.errorShowMessageImagen = [];
-      if (this.imagenPrevia === this.imagen) this.errorShowMessageImagen.push('La imagen no cambió');
-      
+      if (this.imagenPrevia === this.imagen)
+        this.errorShowMessageImagen.push("La imagen no cambió");
 
       if (this.errorShowMessageImagen.length) this.errorImagen = 1;
       return this.errorImagen;
     },
-    getImagenes(){
+    getImagenes() {
       let me = this;
-      var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/imagenes`)
-      .then(function (response) {
-        me.items = response.data
-      })
-      .catch(function (error) {
-          console.log(error);
-      })
-      .then(function () {
-      });
-      
-    },
-    listarImagenes(buscar, criterio){
-      let me = this;
-      if(buscar === ''){
-        setTimeout(() => me.getImagenes(), 1000);
-      }
-      else{
-        var response = axios.get(`https://secret-brushlands-88440.herokuapp.com/imagenes/criterios/${buscar}/${criterio}`)
+      var response = axios
+        .get(`https://secret-brushlands-88440.herokuapp.com/imagenes`)
         .then(function (response) {
-          me.items = response.data
+          me.items = response.data;
         })
         .catch(function (error) {
-            console.log(error);
+          console.log(error);
         })
-        .then(function () {
-        });
+        .then(function () {});
+    },
+    getRearImage() {
+      let me = this;
+      var response = axios
+        .get(`https://secret-brushlands-88440.herokuapp.com/reverso`)
+        .then(function (response) {
+          me.items2 = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+        .then(function () {});
+    },
+    listarImagenes(buscar, criterio) {
+      let me = this;
+      if (buscar === "") {
+        setTimeout(() => me.getImagenes(), 1000);
+      } else {
+        var response = axios
+          .get(
+            `https://secret-brushlands-88440.herokuapp.com/imagenes/criterios/${buscar}/${criterio}`
+          )
+          .then(function (response) {
+            me.items = response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+          .then(function () {});
       }
     },
   },
-  mounted(){
+  mounted() {
     this.getImagenes();
+    this.getRearImage();
   },
-}
+};
 </script>

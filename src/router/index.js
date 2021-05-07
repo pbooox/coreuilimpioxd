@@ -22,6 +22,8 @@ const Imagenes = () => import('@/views/resources/Imagenes')
 const Actualizaciones = () => import('@/views/resources/Actualizaciones')
 const Canjes = () => import('@/views/resources/Canjes')
 const Jugadores = () => import('@/views/resources/Jugadores')
+const Departamentos = () => import('@/views/resources/Departamentos')
+const Municipios = () => import('@/views/resources/Municipios')
 
 Vue.use(Router)
 
@@ -32,7 +34,7 @@ export default new Router({
   routes: configRoutes()
 })
 
-function configRoutes () {
+function configRoutes() {
   return [
     {
       path: '/',
@@ -153,6 +155,42 @@ function configRoutes () {
             },
           ]
         },
+        {
+          path: 'departamentos',
+          meta: {
+            label: 'Departamentos'
+          },
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: [
+            {
+              path: '',
+              name: 'Departamentos',
+              component: Departamentos
+            },
+          ]
+        },
+        {
+          path: 'municipios',
+          meta: {
+            label: 'Municipios'
+          },
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: [
+            {
+              path: '',
+              name: 'Municipios',
+              component: Municipios
+            },
+          ]
+        },
       ]
     },
     {
@@ -160,7 +198,7 @@ function configRoutes () {
       redirect: '/pages/404',
       name: 'Pages',
       component: {
-        render (c) { return c('router-view') }
+        render(c) { return c('router-view') }
       },
       children: [
         {

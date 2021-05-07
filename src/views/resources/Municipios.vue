@@ -3,7 +3,7 @@
     <CCol col="12" xl="12">
       <CCard>
         <CCardHeader>
-          <div>Jugadores</div>
+          <div>Municipios</div>
         </CCardHeader>
 
         <br />
@@ -22,7 +22,7 @@
               />
 
               <button
-                @click="listarJugadores(buscar, criterio)"
+                @click="listarDepartamentos(buscar, criterio)"
                 type="submit"
                 class="btn btn-info"
               >
@@ -42,11 +42,20 @@
             :pagination="{ doubleArrows: false, align: 'center' }"
             @page-change="pageChange"
           >
-            <template #estado="data">
+            <template #acciones="data">
               <td>
-                <CBadge :color="getBadge(data.item.estado)">
-                  {{ data.item.estado }}
-                </CBadge>
+                <div
+                  class="btn-group mr-2"
+                  role="group"
+                  aria-label="First group"
+                >
+                  <button
+                    @click="openModal('update', data.item)"
+                    class="btn btn-info"
+                  >
+                    Editar
+                  </button>
+                </div>
               </td>
             </template>
           </CDataTable>
@@ -70,12 +79,9 @@ export default {
   data() {
     return {
       fields: [
-        { key: "nombre", label: "Nombre", _classes: "font-weight-bold" },
-        { key: "correo", label: "Correo" },
-        { key: "maiz_amarillo", label: "Maíces amarillos" },
-        { key: "maiz_morado", label: "Maíces morados" },
-        { key: "maiz_blanco", label: "Maíces blancos" },
-        { key: "maiz_rojo", label: "´Maíces rojos" },
+        { key: "municipio", label: "Municipio", _classes: "font-weight-bold" },
+        { key: "departamento", label: "Departamento" },
+        { key: "acciones", label: "Acciones" },
       ],
       activePage: 1,
       items: null,
@@ -83,10 +89,6 @@ export default {
       typeAction: 1,
       id: "",
       nombre: "",
-      correo: "",
-      contra1: "",
-      contra2: "",
-      rol: "Seleccione",
       errorUser: 0,
       errorShowMessageUser: [],
       tituloModalActivar: "",
@@ -112,30 +114,28 @@ export default {
       switch (accion) {
         case "register": {
           me.$refs.nuevo_usuario.open();
-          this.titleModal = "Nuevo Usuario";
+          this.titleModal = "Nuevo Municipio";
           this.typeAction = 1;
           break;
         }
         case "update": {
           me.$refs.nuevo_usuario.open();
-          this.titleModal = "Actualizar Usuario";
+          this.titleModal = "Actualizar Municipio";
           this.typeAction = 2;
           this.nombre = data.nombre;
-          this.correo = data.email;
-          this.rol = data.rol;
           this.id = data._id;
           break;
         }
         case "deactivate": {
           me.$refs.activar_modal.open();
-          this.tituloModalActivar = "¿Desea desactivar el usuario?";
+          this.tituloModalActivar = "¿Desea desactivar el municipio?";
           this.id = data._id;
           this.typeAction = 3;
           break;
         }
         case "activate": {
           me.$refs.activar_modal.open();
-          this.tituloModalActivar = "¿Desea activar el usuario?";
+          this.tituloModalActivar = "¿Desea activar el municipio?";
           this.id = data._id;
           this.typeAction = 4;
           break;
@@ -146,17 +146,9 @@ export default {
       this.$refs.nuevo_usuario.close();
       this.$refs.activar_modal.close();
       this.nombre = "";
-      (this.contra1 = ""),
-        (this.contra2 = ""),
-        (this.correo = ""),
-        (this.rol = "Seleccione");
       this.errorUser = 0;
       this.errorShowMessageUser = [];
       this.id = "";
-    },
-    validEmail: function (email) {
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(email);
     },
     getBadge(estado) {
       switch (estado) {
@@ -171,10 +163,10 @@ export default {
     pageChange(val) {
       this.$router.push({ query: { page: val } });
     },
-    getJugadores() {
+    getDepartamentos() {
       let me = this;
       var response = axios
-        .get(`https://api-loteria-heroku.herokuapp.com/listado_de_usuarios`) //
+        .get(`https://secret-brushlands-88440.herokuapp.com/municipios`) //
         .then(function (response) {
           //console.log(response.data)
           me.items = response.data;
@@ -185,10 +177,10 @@ export default {
         })
         .then(function () {});
     },
-    listarJugadores(buscar, criterio) {
+    listarDepartamentos(buscar, criterio) {
       let me = this;
       if (buscar === "") {
-        setTimeout(() => me.getJugadores(), 1000);
+        setTimeout(() => me.get(), 1000);
       } else {
         var response = axios
           .get(
@@ -205,7 +197,7 @@ export default {
     },
   },
   mounted() {
-    this.getJugadores();
+    this.getDepartamentos();
   },
 };
 </script>
